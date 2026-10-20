@@ -1,6 +1,6 @@
 /* Журнал машиниста буровой установки — офлайн-кэш.
    При выпуске новой версии увеличь номер VERSION, иначе телефоны не получат обновление. */
-const VERSION = 'jk830-v2';
+const VERSION = 'jk830-v3';
 const FILES = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
