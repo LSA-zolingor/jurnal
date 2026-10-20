@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Журнал машиниста буровой установки JK830-2</title>
+<meta name="theme-color" content="#2B3742">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Журнал JK830">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --paper:#E9EDF0; --card:#FFFFFF; --ink:#1B242C; --muted:#56636E; --line:#C5CED6;
+  --bar:#2B3742; --barInk:#F3F6F8; --vis:#DD6410; --visInk:#FFFFFF; --visSoft:#FBE3D1;
+  --ok:#2C8A57; --okSoft:#D6EEDF; --water:#2563A8; --warn:#9A6408; --warnSoft:#F8EBCF; --danger:#B8352A;
+  --block:#DCE3E8; --hole:#FFFFFF; --holeStroke:#2B3742; --other:#7FB79A;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#13191E; --card:#1C252C; --ink:#E5EAEE; --muted:#9AA7B1; --line:#33404A;
+    --bar:#0F1418; --barInk:#E5EAEE; --vis:#F07E2C; --visSoft:#3E2716;
+    --ok:#4CB17B; --okSoft:#17352A; --water:#5E9BE0; --warn:#E0A63D; --warnSoft:#3A2E14; --danger:#E06B5F;
+    --block:#25303A; --hole:#1C252C; --holeStroke:#C7D1D9; --other:#3D6E55;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13191E; --card:#1C252C; --ink:#E5EAEE; --muted:#9AA7B1; --line:#33404A;
+  --bar:#0F1418; --barInk:#E5EAEE; --vis:#F07E2C; --visSoft:#3E2716;
+  --ok:#4CB17B; --okSoft:#17352A; --water:#5E9BE0; --warn:#E0A63D; --warnSoft:#3A2E14; --danger:#E06B5F;
+  --block:#25303A; --hole:#1C252C; --holeStroke:#C7D1D9; --other:#3D6E55;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font:400 17px/1.45 Roboto,"Segoe UI",system-ui,Arial,sans-serif;-webkit-text-size-adjust:100%}
+h1,h2,h3,.cond{font-family:"Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--vis);outline-offset:2px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bar);color:var(--barInk);padding:10px 14px;display:flex;align-items:center;gap:10px}
+header.top h1{margin:0;font-size:20px;font-weight:700;line-height:1.05;flex:1;min-width:0}
+header.top h1 small{display:block;font:500 14px/1.2 Roboto,system-ui,sans-serif;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync{border:0;border-radius:8px;padding:9px 12px;font-weight:600;background:rgba(255,255,255,.12);color:var(--barInk);white-space:nowrap;min-height:44px}
+.sync.pending{background:var(--vis);color:var(--visInk)}
+.sync[disabled]{opacity:.6}
+
+main{max-width:900px;margin:0 auto;padding:12px 12px calc(92px + env(safe-area-inset-bottom,0px))}
+section.tab{display:none}
+section.tab.on{display:block}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.card h2{margin:0 0 10px;font-size:21px;font-weight:600;line-height:1.15}
+.hint{color:var(--muted);font-size:15px;margin:-4px 0 10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (min-width:640px){.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}}
+@media (max-width:639px){.grid3{display:grid;grid-template-columns:1fr 1fr;gap:10px}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted);font-weight:500}
+label.f.wide{grid-column:1/-1}
+input[type=text],input[type=number],input[type=url],input[type=date],input:not([type]),select,textarea{
+  width:100%;min-height:46px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);padding:8px 10px;font-size:18px;color:var(--ink)}
+textarea{min-height:120px;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:var(--vis);outline:none}
+.chk{display:flex;gap:10px;align-items:center;font-size:16px;min-height:44px}
+.chk input{width:24px;height:24px;accent-color:var(--vis)}
+
+.btn{border:1.5px solid var(--line);background:var(--card);border-radius:8px;min-height:46px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn.main{background:var(--vis);border-color:var(--vis);color:var(--visInk)}
+.btn.dark{background:var(--bar);border-color:var(--bar);color:var(--barInk)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger);border-color:var(--danger);background:transparent}
+.btn.big{width:100%;min-height:58px;font-size:20px;font-family:"Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;font-weight:700}
+.btn:active{transform:translateY(1px)}
+
+.verts{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.vrow{display:grid;grid-template-columns:38px 1fr 1fr 44px;gap:6px;align-items:center}
+.vrow b{font-family:"Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;font-size:18px;color:var(--muted);text-align:center}
+.vrow button{min-height:46px;border:1.5px solid var(--line);border-radius:8px;background:transparent;font-size:22px;line-height:1;color:var(--muted)}
+.vhead{display:grid;grid-template-columns:38px 1fr 1fr 44px;gap:6px;font-size:13px;color:var(--muted)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.stats div{background:var(--card);padding:10px 8px}
+.stats strong{display:block;font:700 34px/1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.stats span{font-size:14px;color:var(--muted)}
+.facts{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:15px}
+.facts li{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:3px 0}
+.facts li b{font-weight:600}
+
+.scheme{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;margin-bottom:12px;overflow:hidden}
+.scheme svg{display:block;width:100%;height:auto;max-height:68vh;touch-action:manipulation}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--muted);padding:6px 8px 4px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:5px;border:2px solid var(--holeStroke)}
+
+ol.advice{margin:0;padding-left:22px}
+ol.advice li{margin-bottom:8px}
+.warn{background:var(--warnSoft);color:var(--ink);border-left:4px solid var(--warn);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:15px}
+.err{background:var(--warnSoft);border-left:4px solid var(--danger);padding:10px;border-radius:6px}
+
+.progress{height:12px;background:var(--block);border-radius:6px;overflow:hidden;margin:8px 0 4px}
+.progress div{height:100%;background:var(--ok);width:0;transition:width .3s}
+.rec{display:grid;grid-template-columns:56px 1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center;font-size:15px}
+.rec .no{font:700 22px/1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.rec .t{color:var(--muted);font-size:13px}
+.tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:10px;background:var(--block);margin-right:4px}
+.tag.w{background:var(--water);color:#fff}
+
+details.sb{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:10px}
+details.sb summary{list-style:none;padding:12px 14px;cursor:pointer}
+details.sb summary::-webkit-details-marker{display:none}
+details.sb summary h3{margin:0;font-size:20px}
+details.sb .body{padding:0 14px 14px}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;min-width:460px}
+.tbl th,.tbl td{text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+.tbl th{color:var(--muted);font-weight:500}
+.muted{color:var(--muted)}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{border:0;background:transparent;min-height:62px;padding:0 2px;font:600 16px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;color:var(--muted);border-top:3px solid transparent}
+nav.tabs button.on{color:var(--ink);border-top-color:var(--vis)}
+
+dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink);max-height:90vh}
+dialog::backdrop{background:rgba(10,14,18,.55)}
+dialog form,dialog .dbody{padding:16px;display:flex;flex-direction:column;gap:12px}
+dialog h3{margin:0;font-size:24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1.5px solid var(--line);background:transparent;border-radius:22px;min-height:44px;padding:6px 14px;font-weight:500}
+.chips button[aria-pressed="true"]{background:var(--bar);border-color:var(--bar);color:var(--barInk)}
+
+[hidden]{display:none!important}
+dialog.full{width:100vw;max-width:100vw;height:100%;max-height:100%;margin:0;border-radius:0;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:var(--paper)}
+.drawwrap{display:flex;flex-direction:column;height:100%}
+.drawhead{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bar);color:var(--barInk)}
+.drawhead h3{flex:1;margin:0;font-size:22px}
+.drawhead .btn{background:transparent;color:var(--barInk);border-color:rgba(255,255,255,.35)}
+.drawbody{flex:1;overflow:auto;padding:12px;max-width:900px;width:100%;margin:0 auto}
+.pad{display:block;width:min(100%,60vh);aspect-ratio:1/1;margin:0 auto;background:var(--card);border:1.5px solid var(--line);border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none}
+.drawfoot{padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:8px;background:var(--card)}
+.drawfoot .btn{flex:1}
+.dimrow{display:grid;grid-template-columns:58px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.dimrow b{font:700 20px/1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.dimrow b small{display:block;font:500 12px/1.2 Roboto,system-ui,sans-serif;color:var(--muted)}
+.dimrow .radio{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);min-height:44px}
+.dimrow .radio input{width:22px;height:22px;accent-color:var(--vis)}
+.dimrow .btn{min-width:64px}
+.dimrow .btn[aria-pressed="true"]{background:var(--bar);color:var(--barInk);border-color:var(--bar)}
+.okmsg{background:var(--okSoft);border-left:4px solid var(--ok);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:15px}
+.crow{display:grid;grid-template-columns:1fr 88px 44px;gap:6px;padding:8px 0;border-bottom:1px solid var(--line)}
+.crow .nm{grid-column:1/-1}
+.crow button{min-height:46px;border:1.5px solid var(--line);border-radius:8px;background:transparent;font-size:22px;color:var(--muted)}
+.igroup{margin:14px 0 4px;font-size:18px;font-weight:600}
+.irow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:16px}
+.seg{display:flex;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;min-height:44px;padding:0 12px;font-weight:600;color:var(--muted)}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[data-v="ok"][aria-pressed="true"]{background:var(--ok);color:#fff}
+.seg button[data-v="bad"][aria-pressed="true"]{background:var(--danger);color:#fff}
+.inote{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:6px}
+.crit{background:var(--danger);color:#fff;padding:10px 12px;border-radius:8px;margin-bottom:10px;font-weight:600}
+.brk{padding:10px 0;border-bottom:1px solid var(--line)}
+.brk:last-child{border-bottom:0}
+.brk .hd{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.st-open{color:var(--danger);font-weight:600}
+.st-fixed{color:var(--ok);font-weight:600}
+.ack{font-size:15px;padding:4px 0;border-bottom:1px dashed var(--line)}
+details.read summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;min-height:44px;font-weight:600;color:var(--vis)}
+details.read summary::-webkit-details-marker{display:none}
+details.read[open] summary{margin-bottom:6px}
+.sumline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.sumline strong{display:block;font:700 28px/1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.sumline span{font-size:13px;color:var(--muted)}
+#updBar{position:sticky;top:0;z-index:25;background:var(--vis);color:var(--visInk);padding:8px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;font-weight:600}
+#updBar .btn{background:#fff;color:var(--ink);border:0}
+.conn-ok{color:var(--ok);font-weight:600}
+.conn-no{color:var(--danger);font-weight:600}
+#toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bar);color:var(--barInk);padding:10px 16px;border-radius:8px;font-size:15px;max-width:92vw;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+
+.nexthole{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.25}}
+@media (prefers-reduced-motion:reduce){.nexthole{animation:none}.progress div{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Журнал машиниста буровой установки<small id="who">JK830-2</small></h1>
+  <button class="sync" id="syncBtn" type="button">Отправить</button>
+</header>
+
+<div id="updBar" hidden><span>Вышло обновление приложения</span><button class="btn" id="updBtn" type="button">Перезапустить</button></div>
+<main>
+  <!-- ===== БЛОК ===== -->
+  <section class="tab on" id="tab-block">
+    <div class="card" id="installCard" hidden>
+      <h2>Установить на телефон</h2>
+      <p class="hint" id="installHint" style="margin:0 0 8px"></p>
+      <div class="row"><button class="btn main" id="installBtn" type="button" hidden>Установить приложение</button><button class="btn ghost" id="installHide" type="button">Позже</button></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <select id="blockSel" aria-label="Блок" style="flex:1;min-width:160px"></select>
+      <button class="btn dark" id="newBlock" type="button">Новый блок</button>
+    </div>
+
+    <div class="card">
+      <div class="grid2">
+        <label class="f">Название блока<input id="f-name" data-f="name" type="text"></label>
+        <label class="f">Горизонт, участок<input id="f-horizon" data-f="horizon" type="text"></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Контур блока</h2>
+      <p class="hint">Точки по порядку обхода контура, в метрах. Можно вставить координаты от маркшейдера списком.</p>
+      <label class="f" style="margin-bottom:10px">Система координат
+        <select data-f="geo"><option value="0">Обычная: X вправо, Y вверх</option><option value="1">Маркшейдерская: X на север, Y на восток</option></select>
+      </label>
+      <div class="vhead"><span></span><span>X, м</span><span>Y, м</span><span></span></div>
+      <div class="verts" id="verts"></div>
+      <div class="row">
+        <button class="btn main" id="drawBtn" type="button">Начертить от руки</button>
+        <button class="btn" id="addPt" type="button">Добавить точку</button>
+        <button class="btn" id="rectBtn" type="button">Прямоугольник</button>
+        <button class="btn" id="pasteBtn" type="button">Вставить список</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Сетка и глубина</h2>
+      <label class="chk"><input type="checkbox" data-f="square"> Квадратная сетка (между рядами = между скважинами)</label>
+      <div class="grid3">
+        <label class="f">Между скважинами в ряду, м<input data-f="a" inputmode="decimal"></label>
+        <label class="f">Между рядами, м<input data-f="b" inputmode="decimal" id="f-b"></label>
+        <label class="f">Отступ от опорной стороны, м<input data-f="c" inputmode="decimal"></label>
+        <label class="f">Отступ от остальных границ, м<input data-f="d" inputmode="decimal"></label>
+        <label class="f">Глубина скважины, м<input data-f="depth" inputmode="decimal"></label>
+        <label class="f">Перебур, м<input data-f="over" inputmode="decimal"></label>
+      </div>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f wide">Опорная сторона (бровка или край блока)<select data-f="baseEdge" id="f-base"></select></label>
+        <label class="f">Выезд с блока<select data-f="exit"><option value="far">С противоположной стороны</option><option value="base">Со стороны опорной</option></select></label>
+        <label class="f">Начать с края<select data-f="start"><option value="left">Левого</option><option value="right">Правого</option></select></label>
+        <label class="f">Скорость бурения, м/ч<input data-f="rate" inputmode="decimal" placeholder="необязательно"></label>
+        <label class="f">Перестановка, мин<input data-f="move" inputmode="decimal"></label>
+      </div>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn danger" id="delBlock" type="button">Удалить блок с телефона</button>
+    </div>
+  </section>
+
+  <!-- ===== БУРЕНИЕ ===== -->
+  <section class="tab" id="tab-drill">
+    <div class="card">
+      <div class="grid3">
+        <label class="f">Машинист (ФИО)<input id="s-op" type="text" placeholder="Фамилия"></label>
+        <label class="f">Буровая<input id="s-rig" type="text" placeholder="№ станка"></label>
+        <label class="f">Смена<select id="s-shift"><option>День</option><option>Ночь</option></select></label>
+      </div>
+    </div>
+    <div id="drillBody"></div>
+  </section>
+
+  <!-- ===== СМЕНА ===== -->
+  <section class="tab" id="tab-shift"><div id="shiftBody"></div></section>
+
+  <!-- ===== ТБ ===== -->
+  <section class="tab" id="tab-safety"><div id="safetyBody"></div></section>
+
+  <!-- ===== ОБЩИЙ ЖУРНАЛ ===== -->
+  <section class="tab" id="tab-shared">
+    <div class="card">
+      <h2>Подключение к Google Таблице</h2>
+      <p class="hint" id="connState" style="margin:0 0 10px"></p>
+      <label class="f">Адрес скрипта таблицы<input id="cfg-url" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec"></label>
+      <label class="f" style="margin-top:8px">Ключ доступа<input id="cfg-key" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+      <div class="row" style="margin-top:10px">
+        <button class="btn main" id="cfg-test" type="button">Проверить и обновить</button>
+        <button class="btn" id="cfg-share" type="button">Ссылка для бригады</button>
+      </div>
+      <details class="read" style="margin-top:6px"><summary>Как подключить</summary><ol class="advice">
+        <li>Создай Google Таблицу, открой «Расширения → Apps Script», вставь код из файла Code.gs и придумай свой ключ доступа в первой строке кода.</li>
+        <li>«Развернуть → Новое развёртывание», тип «Веб-приложение», выполнять от имени «Я», доступ «Все». Разреши доступ к таблице.</li>
+        <li>Скопируй адрес веб-приложения (заканчивается на /exec) и ключ в поля выше, нажми «Проверить и обновить».</li>
+        <li>Кнопка «Ссылка для бригады» даёт ссылку, по которой у остальных машинистов подключение настроится само.</li>
+      </ol></details>
+    </div>
+    <div class="card">
+      <h2>Общий журнал</h2>
+      <p class="hint" id="sharedState"></p>
+      <div class="row">
+        <button class="btn main" id="csvShared" type="button">Скачать таблицу (CSV для Excel)</button>
+        <button class="btn" id="csvLocal" type="button">Скачать только мои записи</button>
+        <button class="btn" id="csvShifts" type="button">Смены и поломки (CSV)</button>
+        <button class="btn" id="csvAcks" type="button">Ознакомление с ТБ (CSV)</button>
+      </div>
+    </div>
+    <div id="sharedExtra"></div>
+    <h2 class="cond" style="margin:16px 2px 8px;font-size:22px">Блоки</h2>
+    <div id="sharedList"></div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Разделы">
+  <button type="button" data-tab="block" class="on">Блок</button>
+  <button type="button" data-tab="drill">Бурение</button>
+  <button type="button" data-tab="shift">Смена</button>
+  <button type="button" data-tab="safety">ТБ</button>
+  <button type="button" data-tab="shared">Журнал</button>
+</nav>
+
+<dialog id="dlgRect"><form method="dialog">
+  <h3>Прямоугольный блок</h3>
+  <div class="grid2">
+    <label class="f">Длина вдоль бровки, м<input id="r-l" inputmode="decimal"></label>
+    <label class="f">Ширина, м<input id="r-w" inputmode="decimal"></label>
+  </div>
+  <div class="row" style="justify-content:flex-end"><button class="btn ghost" value="cancel">Отмена</button><button class="btn main" value="ok">Построить</button></div>
+</form></dialog>
+
+<dialog id="dlgPaste"><form method="dialog">
+  <h3>Вставить точки</h3>
+  <p class="hint" style="margin:0">По одной точке в строке: «X Y», «X;Y» или «№ X Y». Лишние столбцы (отметка Z) отбрасываются.</p>
+  <textarea id="p-text" placeholder="0 0&#10;62,5 0&#10;70 28&#10;5 34"></textarea>
+  <div class="row" style="justify-content:flex-end"><button class="btn ghost" value="cancel">Отмена</button><button class="btn main" value="ok">Заменить контур</button></div>
+</form></dialog>
+
+<dialog id="dlgHole"><div class="dbody">
+  <h3 id="h-title">Скважина</h3>
+  <p class="hint" id="h-plan" style="margin:0"></p>
+  <label class="f">Фактическая глубина, м<input id="h-depth" inputmode="decimal"></label>
+  <div class="chips" id="h-flags">
+    <button type="button" data-flag="Обводнена" aria-pressed="false">Обводнена</button>
+    <button type="button" data-flag="Пустота" aria-pressed="false">Пустота, провал</button>
+    <button type="button" data-flag="Заклинивание" aria-pressed="false">Заклинивание</button>
+    <button type="button" data-flag="Недобур" aria-pressed="false">Недобур</button>
+    <button type="button" data-flag="Перебурена" aria-pressed="false">Перебурена</button>
+  </div>
+  <label class="f">Примечание<input id="h-note" type="text"></label>
+  <div class="row" style="justify-content:space-between">
+    <button class="btn danger" id="h-clear" type="button">Снять отметку</button>
+    <div class="row"><button class="btn ghost" id="h-cancel" type="button">Отмена</button><button class="btn main" id="h-save" type="button">Пробурена</button></div>
+  </div>
+</div></dialog>
+
+<dialog id="dlgDown"><form method="dialog">
+  <h3>Простой</h3>
+  <label class="f">Причина<select id="d-reason"><option>Ремонт</option><option>ТО, заправка</option><option>Ожидание техники</option><option>Перегон</option><option>Погода</option><option>Нет фронта работ</option><option>Другое</option></select></label>
+  <label class="f">Длительность, мин<input id="d-min" inputmode="numeric"></label>
+  <label class="f">Примечание<input id="d-note" type="text"></label>
+  <div class="row" style="justify-content:flex-end"><button class="btn ghost" value="cancel">Отмена</button><button class="btn main" value="ok">Записать</button></div>
+</form></dialog>
+
+<dialog id="dlgDraw" class="full"><div class="drawwrap">
+  <div class="drawhead"><h3 id="dr-title">Эскиз блока</h3><button class="btn" id="dr-close" type="button">Закрыть</button></div>
+  <div class="drawbody">
+    <div id="dr-step1">
+      <p class="hint" style="margin:0 0 8px">Обведи контур пальцем одним движением или ставь углы касаниями, затем коснись первой точки, чтобы замкнуть. Точки можно перетаскивать, касание у стороны добавляет точку. Масштаб не важен — размеры введёшь дальше.</p>
+      <svg id="pad" class="pad" viewBox="0 0 100 100" aria-label="Поле для эскиза"></svg>
+      <div class="row" style="margin-top:10px;justify-content:center">
+        <button class="btn" id="dr-undo" type="button">Отменить точку</button>
+        <button class="btn" id="dr-del" type="button">Удалить выбранную</button>
+        <button class="btn" id="dr-clear" type="button">Очистить</button>
+        <button class="btn" id="dr-take" type="button">Взять текущий контур</button>
+      </div>
+    </div>
+    <div id="dr-step2" hidden>
+      <div class="scheme" id="dr-preview"></div>
+      <div id="dr-report"></div>
+      <div class="card"><h2>Стороны</h2><p class="hint">Длина в метрах. Отметь опорную сторону — бровку или край, от которого пойдут ряды.</p><div id="dr-sides"></div></div>
+      <div class="card"><h2>Углы</h2><p class="hint">Необязательно. Без углов форма берётся с эскиза приблизительно.</p><div id="dr-angs"></div></div>
+    </div>
+  </div>
+  <div class="drawfoot" id="dr-foot"></div>
+</div></dialog>
+
+<dialog id="dlgBrk"><form method="dialog">
+  <h3>Поломка, неисправность</h3>
+  <label class="f">Узел<select id="b-node"><option>Двигатель</option><option>Компрессор</option><option>Гидравлика</option><option>Ходовая часть</option><option>Буровое оборудование</option><option>Электрика</option><option>Безопасность и кабина</option><option>Смазка</option><option>Другое</option></select></label>
+  <label class="f">Что случилось<input id="b-desc" type="text"></label>
+  <label class="f">Что сделано, кому сообщил<input id="b-act" type="text"></label>
+  <div class="grid2">
+    <label class="f">Простой, мин<input id="b-min" inputmode="numeric"></label>
+    <label class="f">Статус<select id="b-st"><option value="open">Не устранена</option><option value="fixed">Устранена</option></select></label>
+  </div>
+  <div class="row" style="justify-content:flex-end"><button class="btn ghost" value="cancel">Отмена</button><button class="btn main" value="ok">Записать</button></div>
+</form></dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- утилиты ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const num=(v,def=0)=>{const n=parseFloat(String(v==null?'':v).replace(',','.'));return isFinite(n)?n:def;};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(n,d=1)=>(Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toLocaleString('ru-RU');
+const rid=()=>Math.random().toString(36).slice(2,10);
+const tm=iso=>{try{const d=new Date(iso);return d.toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}};
+let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3200);}
+
+/* ---------- хранение на телефоне ---------- */
+const LS='jk830-journal-v1';
+function load(){try{const r=localStorage.getItem(LS);if(r)return JSON.parse(r);}catch(e){}return null;}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){toast('Не удалось сохранить на телефоне — память браузера недоступна');}}
+function newBlock(n){
+  return {id:'b-'+rid(),name:'Блок '+n,horizon:'',geo:'0',verts:[{x:0,y:0},{x:60,y:0},{x:60,y:30},{x:0,y:30}],
+    square:true,a:4,b:4,c:2.5,d:2,depth:10,over:1,baseEdge:0,exit:'far',start:'left',rate:'',move:3,created:Date.now()};
+}
+let S=load();
+if(!S||!S.blocks){S={deviceId:rid(),operator:'',rig:'',shift:'День',blocks:{},activeId:null,records:{},downtime:{},dirty:{},tab:'block'};}
+['shiftsData','customDocs','dshifts','dacks','ddocs'].forEach(k=>{if(!S[k]||typeof S[k]!=='object')S[k]={};});
+if(!Array.isArray(S.acks))S.acks=[];
+if(!S.cfg||typeof S.cfg!=='object')S.cfg={url:'',key:''};
+if(!Object.keys(S.blocks).length){const b=newBlock(1);S.blocks[b.id]=b;S.activeId=b.id;save();}
+if(!S.blocks[S.activeId])S.activeId=Object.keys(S.blocks)[0];
+const act=()=>S.blocks[S.activeId];
+function markDirty(id){S.dirty[id]=(S.dirty[id]||0)+1;save();renderStatus();}
+
+/* ---------- геометрия ---------- */
+function computeBlock(b){
+  const V=(b.verts||[]).map(p=>b.geo==='1'?{x:num(p.y),y:num(p.x)}:{x:num(p.x),y:num(p.y)});
+  const N=V.length;
+  if(N<3)return{error:'Добавь минимум 3 точки контура.'};
+  let A=0;for(let i=0;i<N;i++){const p=V[i],q=V[(i+1)%N];A+=p.x*q.y-q.x*p.y;}A/=2;
+  if(Math.abs(A)<1)return{error:'Площадь контура почти нулевая. Проверь координаты точек.'};
+  const edges=V.map((p,i)=>{const q=V[(i+1)%N];return{i,len:Math.hypot(q.x-p.x,q.y-p.y)};});
+  let e=parseInt(b.baseEdge,10);if(!(e>=0&&e<N))e=edges.reduce((m,x)=>x.len>edges[m].len?x.i:m,0);
+  if(edges[e].len<0.01)return{error:'Опорная сторона нулевой длины — выбери другую.'};
+  let P0=V[e],P1=V[(e+1)%N];if(A<0){const t=P0;P0=P1;P1=t;}
+  const ux=(P1.x-P0.x)/edges[e].len,uy=(P1.y-P0.y)/edges[e].len,nx=-uy,ny=ux;
+  const L=V.map(p=>({s:(p.x-P0.x)*ux+(p.y-P0.y)*uy,t:(p.x-P0.x)*nx+(p.y-P0.y)*ny}));
+  let smin=Infinity,smax=-Infinity,tmin=Infinity,tmax=-Infinity;
+  L.forEach(p=>{smin=Math.min(smin,p.s);smax=Math.max(smax,p.s);tmin=Math.min(tmin,p.t);tmax=Math.max(tmax,p.t);});
+  const a=Math.max(0.5,num(b.a,4)),bb=b.square?a:Math.max(0.5,num(b.b,4)),c=Math.max(0,num(b.c,2)),d=Math.max(0,num(b.d,2));
+  const cand=((smax-smin)/a+2)*((tmax-tmin)/bb+2)*8;
+  if(cand>600000)return{error:'Сетка слишком мелкая для такого размера блока. Проверь единицы — нужны метры.'};
+  const inside=(s,t)=>{let ins=false;for(let i=0,j=N-1;i<N;j=i++){const pi=L[i],pj=L[j];if(((pi.t>t)!==(pj.t>t))&&(s<(pj.s-pi.s)*(t-pi.t)/(pj.t-pi.t)+pi.s))ins=!ins;}return ins;};
+  const segD=(s,t,p,q)=>{const vx=q.s-p.s,vy=q.t-p.t,l2=vx*vx+vy*vy;let k=l2?((s-p.s)*vx+(t-p.t)*vy)/l2:0;k=Math.max(0,Math.min(1,k));return Math.hypot(s-(p.s+k*vx),t-(p.t+k*vy));};
+  const ok=(s,t)=>{if(!inside(s,t))return false;for(let i=0;i<N;i++){if(segD(s,t,L[i],L[(i+1)%N])<(i===e?c:d)-1e-6)return false;}return true;};
+  const kMin=Math.ceil((tmin-c)/bb-1e-9),kMax=Math.floor((tmax-c)/bb+1e-9);
+  let best=[];
+  for(let sh=0;sh<8;sh++){
+    const sA=smin+d+sh*a/8,pts=[];
+    for(let k=kMin;k<=kMax;k++){const t=c+k*bb;const j0=Math.ceil((smin-sA)/a),j1=Math.floor((smax-sA)/a);
+      for(let j=j0;j<=j1;j++){const s=sA+j*a;if(ok(s,t))pts.push({s,t,k});}}
+    if(pts.length>best.length)best=pts;
+  }
+  const rows=new Map();best.forEach(p=>{if(!rows.has(p.k))rows.set(p.k,[]);rows.get(p.k).push(p);});
+  const ks=[...rows.keys()].sort((x,y)=>x-y);if(b.exit==='base')ks.reverse();
+  let asc=b.start!=='right';const holes=[];let n=0;
+  ks.forEach((k,ri)=>{const r=rows.get(k).sort((p,q)=>p.s-q.s);if(!asc)r.reverse();
+    r.forEach(p=>holes.push({n:++n,s:p.s,t:p.t,row:ri+1}));asc=!asc;});
+  // острые углы
+  const sharp=[];const sg=Math.sign(A);
+  for(let i=0;i<N;i++){const p=V[(i-1+N)%N],q=V[i],r=V[(i+1)%N];
+    const v1x=p.x-q.x,v1y=p.y-q.y,v2x=r.x-q.x,v2y=r.y-q.y;const l1=Math.hypot(v1x,v1y),l2=Math.hypot(v2x,v2y);if(!l1||!l2)continue;
+    const ang=Math.acos(Math.max(-1,Math.min(1,(v1x*v2x+v1y*v2y)/(l1*l2))))*180/Math.PI;
+    const cross=(q.x-p.x)*(r.y-q.y)-(q.y-p.y)*(r.x-q.x);if(cross*sg>0&&ang<60)sharp.push(i+1);}
+  const depth=Math.max(0,num(b.depth,10)),over=Math.max(0,num(b.over,0)),len=depth+over;
+  const area=Math.abs(A);let per=0;edges.forEach(x=>per+=x.len);
+  return{a,b:bb,c,d,e,edges,L,smin,smax,tmin,tmax,holes,rowsCount:ks.length,area,per,depth,over,len,meters:holes.length*len,
+    coverage:holes.length*a*bb/area,sharp,maxRow:Math.max(0,...[...rows.values()].map(r=>r.length))};
+}
+
+/* ---------- схема SVG ---------- */
+function scheme(G,b,mode,status){
+  const pad=Math.max(G.a,4)*1.1;
+  const W=G.smax-G.smin+2*pad,H=G.tmax-G.tmin+2*pad;
+  const X=s=>s-G.smin+pad,Y=t=>G.tmax-t+pad;
+  const U=Math.max(W,H)/34;
+  const r=Math.min(G.a,G.b)*0.3;
+  const N=G.L.length;let o='';
+  o+=`<svg viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема блока">`;
+  o+=`<polygon points="${G.L.map(p=>X(p.s).toFixed(2)+','+Y(p.t).toFixed(2)).join(' ')}" fill="var(--block)" stroke="var(--holeStroke)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;
+  // опорная сторона
+  const p0=G.L[G.e],p1=G.L[(G.e+1)%N];
+  o+=`<line x1="${X(p0.s)}" y1="${Y(p0.t)}" x2="${X(p1.s)}" y2="${Y(p1.t)}" stroke="var(--vis)" stroke-width="6" vector-effect="non-scaling-stroke" stroke-linecap="round"/>`;
+  // подписи сторон
+  const cs=G.L.reduce((m,p)=>m+p.s,0)/N,ct=G.L.reduce((m,p)=>m+p.t,0)/N;
+  G.edges.forEach((ed,i)=>{const p=G.L[i],q=G.L[(i+1)%N];let ms=(p.s+q.s)/2,mt=(p.t+q.t)/2;
+    const dx=ms-cs,dt=mt-ct,dl=Math.hypot(dx,dt)||1;ms+=dx/dl*U*1.3;mt+=dt/dl*U*1.3;
+    o+=`<text x="${X(ms)}" y="${Y(mt)}" font-size="${U*0.85}" text-anchor="middle" dominant-baseline="middle" fill="${i===G.e?'var(--vis)':'var(--muted)'}" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="600">С${i+1} ${fmt(ed.len)} м</text>`;});
+  // маршрут
+  if(G.holes.length>1){o+=`<polyline points="${G.holes.map(h=>X(h.s).toFixed(2)+','+Y(h.t).toFixed(2)).join(' ')}" fill="none" stroke="var(--vis)" stroke-width="1.6" stroke-dasharray="5 4" vector-effect="non-scaling-stroke" opacity=".85"/>`;}
+  // скважины
+  const fs=G.holes.length>=100?r*0.78:r*0.95;const showNum=r*Math.min(1,1)>0&&G.holes.length<=600;
+  G.holes.forEach(h=>{
+    const st=status?status(h.n):null;let fill='var(--hole)',stroke='var(--holeStroke)',sw=1.5,txt='var(--ink)',cls='';
+    if(st){if(st.mine){fill='var(--ok)';txt='#fff';}else if(st.other){fill='var(--other)';txt='#fff';}
+      if(st.water){stroke='var(--water)';sw=4;}if(st.next){stroke='var(--vis)';sw=5;cls='nexthole';}}
+    o+=`<g data-n="${h.n}" style="cursor:${mode==='drill'?'pointer':'default'}"><circle class="${cls}" cx="${X(h.s).toFixed(2)}" cy="${Y(h.t).toFixed(2)}" r="${r.toFixed(2)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" vector-effect="non-scaling-stroke"/>`;
+    if(showNum)o+=`<text x="${X(h.s).toFixed(2)}" y="${Y(h.t).toFixed(2)}" font-size="${fs.toFixed(2)}" text-anchor="middle" dominant-baseline="central" fill="${txt}" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="700" pointer-events="none">${h.n}</text>`;
+    if(mode==='drill')o+=`<circle cx="${X(h.s).toFixed(2)}" cy="${Y(h.t).toFixed(2)}" r="${(Math.min(G.a,G.b)*0.5).toFixed(2)}" fill="transparent"/>`;
+    o+='</g>';});
+  // старт и выезд
+  if(G.holes.length){const h=G.holes[0];const dy=(b.exit==='base'?-1:1);
+    o+=`<text x="${X(h.s)}" y="${Y(h.t)+dy*(r+U*0.9)}" font-size="${U}" text-anchor="middle" dominant-baseline="middle" fill="var(--vis)" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="700">Старт</text>`;}
+  const exY=b.exit==='base'?H-pad*0.35:pad*0.4;
+  o+=`<text x="${W/2}" y="${exY}" font-size="${U}" text-anchor="middle" dominant-baseline="middle" fill="var(--ink)" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="700">${b.exit==='base'?'↓ Выезд':'↑ Выезд'}</text>`;
+  // масштаб
+  const sb=W>60?20:10;o+=`<g><line x1="${pad*0.4}" y1="${H-pad*0.3}" x2="${pad*0.4+sb}" y2="${H-pad*0.3}" stroke="var(--ink)" stroke-width="3" vector-effect="non-scaling-stroke"/><text x="${pad*0.4+sb/2}" y="${H-pad*0.3-U*0.6}" font-size="${U*0.75}" text-anchor="middle" fill="var(--muted)" font-family="Roboto,system-ui,sans-serif">${sb} м</text></g>`;
+  o+='</svg>';return o;
+}
+
+function advice(G,b){
+  const A=[],W=[];const edge=G.edges[G.e];
+  const vert=b.exit==='base'?'вверху схемы, у дальней от опорной стороны границы':'внизу схемы, у опорной стороны';
+  const hor=b.start==='right'?'справа':'слева';
+  A.push(`Ряды ставь параллельно стороне С${G.e+1} (${fmt(edge.len)} м) — она отмечена оранжевым. Первый ряд от неё в ${fmt(G.c)} м.`);
+  A.push(`Начни со скважины №1 — ${hor} ${vert}. Ряд 1 ${b.exit==='base'?'самый дальний от выезда':'идёт вдоль опорной стороны'}.`);
+  A.push(`Иди змейкой: ряд 1 ${b.start==='right'?'справа налево':'слева направо'}, ряд 2 обратно и так далее. Так меньше холостых переездов и разворотов.`);
+  A.push(`Отходи к выезду (${b.exit==='base'?'со стороны опорной':'с противоположной стороны'}), не заезжая гусеницами на пробуренные скважины и шлам: устья осыпаются, скважину придётся перебуривать.`);
+  A.push(`Перед каждой забуркой выставляй станок по уровню на домкратах и проверяй вертикальность мачты: на ${fmt(G.len)} м даже небольшой наклон заметно сдвигает забой.`);
+  A.push(`Если опорная сторона — бровка уступа, расстояние от гусениц до бровки и положение станка держи строго по паспорту БВР. При сомнениях в устойчивости бровки ряд у неё не бури до осмотра мастером.`);
+  if(G.holes.length===0)W.push('Скважины не помещаются в контур. Уменьши отступы или сетку, проверь точки.');
+  if(G.c<2)W.push('Отступ от опорной стороны меньше 2 м. Сверь с паспортом БВР.');
+  if(G.holes.length&&G.coverage<0.8)W.push(`Сеткой закрыто примерно ${Math.round(G.coverage*100)}% площади — у границ остаются полосы без скважин. Подумай о контурных скважинах или меньших отступах.`);
+  if(G.sharp.length)W.push(`Острый угол в точке ${G.sharp.map(x=>'Т'+x).join(', ')}: в нём скважин не будет, уточни у мастера, нужна ли там дополнительная.`);
+  return{A,W};
+}
+
+/* ---------- вкладка «Блок» ---------- */
+function renderBlockSel(){
+  const sel=$('#blockSel');const list=Object.values(S.blocks).sort((x,y)=>(y.created||0)-(x.created||0));
+  sel.innerHTML=list.map(b=>`<option value="${b.id}"${b.id===S.activeId?' selected':''}>${esc(b.name||'Без названия')}${b.horizon?' ('+esc(b.horizon)+')':''}</option>`).join('');
+}
+function renderForm(){
+  const b=act();
+  $$('#tab-block [data-f]').forEach(el=>{const f=el.dataset.f;const v=b[f];
+    if(el.type==='checkbox')el.checked=!!v;else if(f!=='baseEdge')el.value=v==null?'':v;});
+  renderVerts();renderBaseSel();syncSquare();
+}
+function syncSquare(){const b=act();const fb=$('#f-b');fb.disabled=!!b.square;if(b.square)fb.value=b.a;}
+function renderVerts(){
+  const b=act();
+  $('#verts').innerHTML=b.verts.map((p,i)=>`<div class="vrow"><b>Т${i+1}</b><input inputmode="decimal" data-i="${i}" data-k="x" value="${esc(p.x)}" aria-label="X точки ${i+1}"><input inputmode="decimal" data-i="${i}" data-k="y" value="${esc(p.y)}" aria-label="Y точки ${i+1}"><button type="button" data-del="${i}" aria-label="Удалить точку ${i+1}">×</button></div>`).join('');
+}
+function renderBaseSel(){
+  const b=act();const G=computeBlock(b);const sel=$('#f-base');
+  if(G.error){sel.innerHTML='<option>—</option>';return;}
+  sel.innerHTML=G.edges.map((e,i)=>`<option value="${i}"${i===G.e?' selected':''}>Сторона С${i+1}: Т${i+1}–Т${(i+1)%G.edges.length+1}, ${fmt(e.len)} м</option>`).join('');
+}
+function renderResult(){
+  const b=act();const G=computeBlock(b);const box=$('#result');
+  if(G.error){box.innerHTML=`<div class="card"><div class="err">${esc(G.error)}</div></div>`;return;}
+  const {A,W}=advice(G,b);const recs=S.records[b.id]||{};const hasRecs=Object.keys(recs).length>0;
+  const rate=num(b.rate,0),move=num(b.move,0);
+  let time='';if(rate>0){const h=G.meters/rate+G.holes.length*move/60;time=`<li>Время на блок <b>≈ ${fmt(h)} ч</b></li><li>Смен по 11 ч <b>≈ ${fmt(h/11)}</b></li>`;}
+  box.innerHTML=
+  `<div class="stats"><div><strong>${G.holes.length}</strong><span>скважин</span></div><div><strong>${fmt(G.meters,0)}</strong><span>пог. м всего</span></div><div><strong>${G.rowsCount}</strong><span>рядов</span></div></div>`+
+  (hasRecs?`<div class="warn">По этому блоку уже есть записи бурения. Изменение контура или сетки перенумерует скважины.</div>`:'')+
+  `<div class="scheme">${scheme(G,b,'plan')}<div class="legend"><span><i style="border-color:var(--vis);background:var(--vis);border-radius:2px;height:5px"></i>опорная сторона</span><span>пунктир — порядок обуривания</span></div></div>`+
+  `<div class="card"><h2>Как бурить</h2>${W.map(w=>`<div class="warn">${esc(w)}</div>`).join('')}<ol class="advice">${A.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`+
+  `<div class="card"><h2>Расчёт</h2><ul class="facts">
+    <li>Площадь <b>${fmt(G.area,0)} м²</b></li><li>Периметр <b>${fmt(G.per)} м</b></li>
+    <li>Сетка <b>${fmt(G.a)} × ${fmt(G.b)} м</b></li><li>На скважину <b>${fmt(G.len)} м</b></li>
+    <li>Объём блока <b>≈ ${fmt(G.area*G.depth,0)} м³</b></li><li>Макс. в ряду <b>${G.maxRow}</b></li>
+    <li>Скважин на 1000 м² <b>${fmt(G.holes.length/G.area*1000)}</b></li><li>Покрытие сеткой <b>${Math.round(G.coverage*100)}%</b></li>${time}
+  </ul></div>`;
+}
+let rT;function refresh(){clearTimeout(rT);rT=setTimeout(()=>{renderResult();},140);}
+
+$('#tab-block').addEventListener('input',ev=>{
+  const el=ev.target;const b=act();
+  if(el.dataset.k){b.verts[+el.dataset.i][el.dataset.k]=el.value;save();markDirty(b.id);renderBaseSel();refresh();return;}
+  const f=el.dataset.f;if(!f)return;
+  b[f]=el.type==='checkbox'?el.checked:el.value;
+  if(f==='baseEdge')b.baseEdge=parseInt(el.value,10);
+  if(f==='square'||f==='a')syncSquare();
+  if(f==='name'||f==='horizon'){renderBlockSel();renderWho();}
+  if(f==='geo')renderBaseSel();
+  save();markDirty(b.id);refresh();
+});
+$('#tab-block').addEventListener('change',ev=>{if(ev.target.tagName==='SELECT'&&ev.target.dataset.f){ev.target.dispatchEvent(new Event('input',{bubbles:true}));}});
+$('#verts').addEventListener('click',ev=>{const d=ev.target.closest('[data-del]');if(!d)return;const b=act();
+  if(b.verts.length<=3){toast('В контуре должно быть минимум 3 точки');return;}
+  b.verts.splice(+d.dataset.del,1);if(b.baseEdge>=b.verts.length)b.baseEdge=0;save();markDirty(b.id);renderVerts();renderBaseSel();renderResult();});
+$('#addPt').onclick=()=>{const b=act();const l=b.verts[b.verts.length-1]||{x:0,y:0};b.verts.push({x:l.x,y:l.y});save();renderVerts();
+  const ins=$$('#verts input');if(ins.length)ins[ins.length-2].focus();};
+$('#blockSel').onchange=e=>{S.activeId=e.target.value;save();renderAll();};
+$('#newBlock').onclick=()=>{const b=newBlock(Object.keys(S.blocks).length+1);S.blocks[b.id]=b;S.activeId=b.id;save();markDirty(b.id);renderAll();$('#f-name').focus();};
+let delArm=0;$('#delBlock').onclick=()=>{const btn=$('#delBlock');
+  if(Date.now()-delArm>4000){delArm=Date.now();btn.textContent='Нажми ещё раз — удалить';setTimeout(()=>btn.textContent='Удалить блок с телефона',4000);return;}
+  const id=S.activeId;delete S.blocks[id];delete S.records[id];delete S.downtime[id];delete S.dirty[id];
+  if(!Object.keys(S.blocks).length){const b=newBlock(1);S.blocks[b.id]=b;}
+  S.activeId=Object.keys(S.blocks)[0];save();btn.textContent='Удалить блок с телефона';delArm=0;renderAll();toast('Блок удалён с телефона. В общем журнале он остаётся.');};
+
+$('#rectBtn').onclick=()=>{$('#r-l').value='';$('#r-w').value='';$('#dlgRect').showModal();};
+$('#dlgRect').addEventListener('close',()=>{if($('#dlgRect').returnValue!=='ok')return;const l=num($('#r-l').value),w=num($('#r-w').value);
+  if(l<=0||w<=0){toast('Укажи длину и ширину в метрах');return;}const b=act();
+  b.verts=[{x:0,y:0},{x:l,y:0},{x:l,y:w},{x:0,y:w}];b.baseEdge=0;b.geo='0';save();markDirty(b.id);renderForm();renderResult();});
+$('#pasteBtn').onclick=()=>{$('#p-text').value='';$('#dlgPaste').showModal();};
+$('#dlgPaste').addEventListener('close',()=>{if($('#dlgPaste').returnValue!=='ok')return;
+  const pts=[];$('#p-text').value.split(/\r?\n/).forEach(line=>{line=line.trim();if(!line)return;
+    let parts;if(/[;\t]/.test(line))parts=line.split(/[;\t]+/);else if(/\s/.test(line))parts=line.split(/\s+/);else parts=line.split(',');
+    const ns=parts.map(p=>p.trim()).filter(Boolean).map(p=>parseFloat(p.replace(',','.'))).filter(x=>isFinite(x));
+    if(ns.length===2)pts.push({x:ns[0],y:ns[1]});
+    else if(ns.length>=3){const nLike=Number.isInteger(ns[0])&&Math.abs(ns[0])<1000&&(Math.abs(ns[1])>=1000||ns.length>=4);
+      pts.push(nLike?{x:ns[1],y:ns[2]}:{x:ns[0],y:ns[1]});}});
+  if(pts.length<3){toast('Нашёл меньше 3 точек. Проверь формат.');return;}
+  const b=act();b.verts=pts;b.baseEdge=-1;const G=computeBlock(b);if(!G.error)b.baseEdge=G.e;
+  save();markDirty(b.id);renderForm();renderResult();toast('Контур заменён: '+pts.length+' точек');});
+
+/* ---------- эскиз от руки ---------- */
+const D={pts:[],closed:false,sel:-1,lens:[],angs:[],base:0,step:1,stroke:null,drag:-1,moved:false,down:null,res:null};
+const pad=$('#pad');
+const dd=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function segDist(p,a,b){const vx=b.x-a.x,vy=b.y-a.y,l2=vx*vx+vy*vy;let k=l2?((p.x-a.x)*vx+(p.y-a.y)*vy)/l2:0;k=Math.max(0,Math.min(1,k));return Math.hypot(p.x-(a.x+k*vx),p.y-(a.y+k*vy));}
+function lineDist(p,a,b){const l=dd(a,b);if(!l)return dd(p,a);return Math.abs((b.x-a.x)*(a.y-p.y)-(a.x-p.x)*(b.y-a.y))/l;}
+function padPt(ev){const m=pad.getScreenCTM();if(!m)return{x:0,y:0};const p=new DOMPoint(ev.clientX,ev.clientY).matrixTransform(m.inverse());return{x:Math.max(0,Math.min(100,p.x)),y:Math.max(0,Math.min(100,p.y))};}
+function nearV(p,r){let best=-1,bd=r;D.pts.forEach((q,i)=>{const d=dd(p,q);if(d<bd){bd=d;best=i;}});return best;}
+function nearE(p){let best={i:-1,d:Infinity};const n=D.pts.length;for(let i=0;i<n;i++){const d=segDist(p,D.pts[i],D.pts[(i+1)%n]);if(d<best.d)best={i,d};}return best;}
+function rdp(pts,eps){if(pts.length<3)return pts.slice();let dm=0,ix=0;const a=pts[0],b=pts[pts.length-1];
+  for(let i=1;i<pts.length-1;i++){const d=segDist(pts[i],a,b);if(d>dm){dm=d;ix=i;}}
+  if(dm>eps){const l=rdp(pts.slice(0,ix+1),eps),r=rdp(pts.slice(ix),eps);return l.slice(0,-1).concat(r);}return[a,b];}
+function simplify(s){
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;s.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y);});
+  const diag=Math.hypot(x1-x0,y1-y0);if(diag<8)return[];
+  let far=0,fd=0;s.forEach((p,i)=>{const d=dd(p,s[0]);if(d>fd){fd=d;far=i;}});
+  const A=s.slice(0,far+1),B=s.slice(far).concat([s[0]]);
+  let eps=diag*0.035,out=[];
+  for(let k=0;k<10;k++){out=rdp(A,eps).slice(0,-1).concat(rdp(B,eps).slice(0,-1));if(out.length<=12)break;eps*=1.4;}
+  let changed=true;
+  while(changed&&out.length>3){changed=false;
+    for(let i=0;i<out.length;i++){const n=out.length,p=out[(i-1+n)%n],q=out[i],r=out[(i+1)%n];
+      if(lineDist(q,p,r)<eps*0.7||dd(q,p)<diag*0.04){out.splice(i,1);changed=true;break;}}}
+  return out;
+}
+function renderPad(){
+  let o='';for(let i=10;i<100;i+=10)o+=`<line x1="${i}" y1="0" x2="${i}" y2="100" stroke="var(--line)" stroke-width=".25"/><line x1="0" y1="${i}" x2="100" y2="${i}" stroke="var(--line)" stroke-width=".25"/>`;
+  const n=D.pts.length;
+  if(n){const pts=D.pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
+    o+=D.closed?`<polygon points="${pts}" fill="var(--block)" stroke="var(--holeStroke)" stroke-width=".8" stroke-linejoin="round"/>`:`<polyline points="${pts}" fill="none" stroke="var(--holeStroke)" stroke-width=".8"/>`;
+    const cx=D.pts.reduce((m,p)=>m+p.x,0)/n,cy=D.pts.reduce((m,p)=>m+p.y,0)/n;
+    const ne=D.closed?n:n-1;
+    for(let i=0;i<ne;i++){const a=D.pts[i],b=D.pts[(i+1)%n];let mx=(a.x+b.x)/2,my=(a.y+b.y)/2;const dx=mx-cx,dy=my-cy,dl=Math.hypot(dx,dy)||1;mx+=dx/dl*4;my+=dy/dl*4;
+      if(D.closed&&i===D.base)o+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="var(--vis)" stroke-width="1.8" stroke-linecap="round"/>`;
+      o+=`<text x="${mx}" y="${my}" font-size="3.6" text-anchor="middle" dominant-baseline="middle" fill="${D.closed&&i===D.base?'var(--vis)':'var(--muted)'}" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="700">С${i+1}</text>`;}
+    D.pts.forEach((p,i)=>{
+      if(i===D.sel)o+=`<circle cx="${p.x}" cy="${p.y}" r="3.6" fill="none" stroke="var(--vis)" stroke-width=".8"/>`;
+      o+=`<circle cx="${p.x}" cy="${p.y}" r="2" fill="${i===0?'var(--vis)':'var(--card)'}" stroke="var(--holeStroke)" stroke-width=".6"/>`;
+      const dx=p.x-cx,dy=p.y-cy,dl=Math.hypot(dx,dy)||1;
+      o+=`<text x="${p.x+dx/dl*4.5}" y="${p.y+dy/dl*4.5}" font-size="3" text-anchor="middle" dominant-baseline="middle" fill="var(--ink)" font-family="Roboto,system-ui,sans-serif" font-weight="600">Т${i+1}</text>`;});}
+  if(D.stroke&&D.stroke.length>1)o+=`<polyline points="${D.stroke.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ')}" fill="none" stroke="var(--vis)" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(!n&&!D.stroke)o+=`<text x="50" y="50" font-size="4" text-anchor="middle" fill="var(--muted)" font-family="Roboto,system-ui,sans-serif">Обведи контур блока пальцем</text>`;
+  pad.innerHTML=o;
+  $('#dr-del').disabled=D.sel<0;$('#dr-undo').disabled=!n;
+}
+pad.addEventListener('pointerdown',ev=>{ev.preventDefault();try{pad.setPointerCapture(ev.pointerId);}catch(e){}
+  const p=padPt(ev);D.moved=false;D.down=p;const i=nearV(p,5);
+  if(i>=0){D.drag=i;D.sel=i;}else{D.stroke=[p];}renderPad();});
+pad.addEventListener('pointermove',ev=>{if(D.drag<0&&!D.stroke)return;const p=padPt(ev);
+  if(dd(p,D.down)>1.5)D.moved=true;
+  if(D.drag>=0){if(D.moved){D.pts[D.drag]=p;renderPad();}}
+  else{const l=D.stroke[D.stroke.length-1];if(dd(p,l)>0.7){D.stroke.push(p);renderPad();}}});
+function endPtr(){
+  if(D.drag>=0){if(!D.moved&&D.drag===0&&!D.closed&&D.pts.length>=3)D.closed=true;D.drag=-1;renderPad();return;}
+  if(!D.stroke)return;const s=D.stroke;D.stroke=null;let len=0;for(let i=1;i<s.length;i++)len+=dd(s[i],s[i-1]);
+  if(len<4){const p=s[0];
+    if(!D.closed){D.pts.push(p);D.lens.push('');D.angs.push('');D.sel=D.pts.length-1;}
+    else{const e=nearE(p);if(e.d<4){D.pts.splice(e.i+1,0,p);D.lens.splice(e.i+1,0,'');D.angs.splice(e.i+1,0,'');D.sel=e.i+1;}
+      else{D.sel=-1;toast('Контур замкнут. Перетаскивай точки, касание у стороны добавляет точку.');}}}
+  else{const poly=simplify(s);
+    if(poly.length<3)toast('Не получилось распознать контур — обведи крупнее');
+    else{D.pts=poly;D.closed=true;D.sel=-1;D.lens=poly.map(()=>'');D.angs=poly.map(()=>'');D.base=0;}}
+  renderPad();
+}
+pad.addEventListener('pointerup',endPtr);pad.addEventListener('pointercancel',endPtr);
+$('#dr-undo').onclick=()=>{if(!D.pts.length)return;D.pts.pop();D.lens.pop();D.angs.pop();D.closed=false;D.sel=-1;renderPad();};
+$('#dr-del').onclick=()=>{if(D.sel<0)return;D.pts.splice(D.sel,1);D.lens.splice(D.sel,1);D.angs.splice(D.sel,1);if(D.pts.length<3)D.closed=false;if(D.base>=D.pts.length)D.base=0;D.sel=-1;renderPad();};
+$('#dr-clear').onclick=()=>{D.pts=[];D.lens=[];D.angs=[];D.closed=false;D.sel=-1;D.base=0;renderPad();};
+$('#dr-take').onclick=()=>{const b=act();const G=computeBlock(b);if(G.error){toast('Текущий контур не задан');return;}
+  const V=b.verts.map(p=>b.geo==='1'?{x:num(p.y),y:num(p.x)}:{x:num(p.x),y:num(p.y)});
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;V.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y);});
+  const k=80/Math.max(x1-x0,y1-y0,0.01),ox=(100-(x1-x0)*k)/2,oy=(100-(y1-y0)*k)/2;
+  D.pts=V.map(p=>({x:ox+(p.x-x0)*k,y:100-(oy+(p.y-y0)*k)}));D.closed=true;D.sel=-1;
+  D.lens=G.edges.map(e=>String(Math.round(e.len*100)/100).replace('.',','));D.angs=V.map(()=>'');D.base=G.e;renderPad();};
+
+/* решатель: длины и углы -> координаты */
+function gauss(A,bv){const n=bv.length,M=A.map((r,i)=>r.concat([bv[i]]));
+  for(let c=0;c<n;c++){let pv=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[pv][c]))pv=r;
+    if(Math.abs(M[pv][c])<1e-14)return null;[M[c],M[pv]]=[M[pv],M[c]];
+    for(let r=c+1;r<n;r++){const f=M[r][c]/M[c][c];if(f)for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}}
+  const x=new Array(n).fill(0);for(let r=n-1;r>=0;r--){let s=M[r][n];for(let k=r+1;k<n;k++)s-=M[r][k]*x[k];x[r]=s/M[r][r];}return x;}
+function lm(x0,resf,iters){let x=x0.slice(),r=resf(x),cost=r.reduce((m,v)=>m+v*v,0),lam=1e-3;const m=x.length;
+  for(let it=0;it<iters&&cost>1e-14;it++){
+    const J=[];for(let j=0;j<m;j++){const xp=x.slice(),h=1e-6*Math.max(1,Math.abs(x[j]));xp[j]+=h;const rp=resf(xp);J.push(rp.map((v,k)=>(v-r[k])/h));}
+    const A=[],g=[];for(let a=0;a<m;a++){A.push(new Array(m).fill(0));let s=0;for(let k=0;k<r.length;k++)s+=J[a][k]*r[k];g.push(-s);}
+    for(let a=0;a<m;a++)for(let b2=a;b2<m;b2++){let s=0;for(let k=0;k<r.length;k++)s+=J[a][k]*J[b2][k];A[a][b2]=s;A[b2][a]=s;}
+    let ok=false;
+    for(let t=0;t<12;t++){const M=A.map((row,i)=>row.map((v,j)=>i===j?v*(1+lam)+1e-9:v));const dl=gauss(M,g);
+      if(dl){const xn=x.map((v,i)=>v+dl[i]),rn=resf(xn),cn=rn.reduce((s2,v)=>s2+v*v,0);
+        if(cn<cost){const gain=cost-cn;x=xn;r=rn;cost=cn;lam=Math.max(lam/3,1e-9);ok=true;if(gain<1e-12*(1+cost))it=iters;break;}}
+      lam*=4;}
+    if(!ok)break;}
+  return x;}
+function interior(p,c,q,ccw){const v1x=p.x-c.x,v1y=p.y-c.y,v2x=q.x-c.x,v2y=q.y-c.y;
+  let a=ccw?Math.atan2(v2x*v1y-v2y*v1x,v2x*v1x+v2y*v1y):Math.atan2(v1x*v2y-v1y*v2x,v1x*v2x+v1y*v2y);if(a<0)a+=2*Math.PI;return a;}
+function solveDraw(){
+  const n=D.pts.length,lens=D.lens.map(v=>num(v,0)),angs=D.angs.map(v=>num(v,0));
+  const q0=D.pts.map(p=>({x:p.x,y:100-p.y}));
+  let A2=0;for(let i=0;i<n;i++){const p=q0[i],q=q0[(i+1)%n];A2+=p.x*q.y-q.x*p.y;}const ccw=A2>0;
+  let sumL=0,sumS=0,given=0;lens.forEach((L,i)=>{if(L>0){sumL+=L;sumS+=dd(q0[i],q0[(i+1)%n]);given++;}});
+  const nA=angs.filter(a=>a>0).length;
+  if(!given){D.res={pts:null,given,nA,n};return;}
+  const k=sumL/sumS;const q=q0.map(p=>({x:(p.x-q0[0].x)*k,y:(p.y-q0[0].y)*k}));const Lm=sumL/given;
+  const P=(x,i)=>{i=(i+n)%n;return{x:x[2*i],y:x[2*i+1]};};
+  const mk=eps=>x=>{const r=[];
+    for(let i=0;i<n;i++)if(lens[i]>0)r.push(dd(P(x,i),P(x,i+1))-lens[i]);
+    for(let i=0;i<n;i++)if(angs[i]>0)r.push((interior(P(x,i-1),P(x,i),P(x,i+1),ccw)-angs[i]*Math.PI/180)*Lm);
+    for(let i=0;i<n;i++){r.push(eps*(x[2*i]-q[i].x));r.push(eps*(x[2*i+1]-q[i].y));}return r;};
+  let x=q.flatMap(p=>[p.x,p.y]);x=lm(x,mk(0.05),80);x=lm(x,mk(0.002),80);
+  const pts=[];for(let i=0;i<n;i++)pts.push(P(x,i));
+  const actL=pts.map((p,i)=>dd(p,pts[(i+1)%n])),actA=pts.map((p,i)=>interior(pts[(i-1+n)%n],p,pts[(i+1)%n],ccw)*180/Math.PI);
+  const bad=[];lens.forEach((L,i)=>{if(L>0&&Math.abs(actL[i]-L)>0.1)bad.push(`С${i+1}: задано ${fmt(L,2)} м, выходит ${fmt(actL[i],2)} м`);});
+  angs.forEach((a,i)=>{if(a>0&&Math.abs(actA[i]-a)>0.5)bad.push(`угол Т${i+1}: задано ${fmt(a)}°, выходит ${fmt(actA[i])}°`);});
+  let self=false;for(let i=0;i<n&&!self;i++)for(let j=i+2;j<n;j++){if(i===0&&j===n-1)continue;if(segX(pts[i],pts[(i+1)%n],pts[j],pts[(j+1)%n])){self=true;break;}}
+  D.res={pts,actL,actA,bad,given,nA,n,self};
+}
+function segX(a,b,c,d){const o=(p,q,r)=>Math.sign((q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x));return o(a,b,c)*o(a,b,d)<0&&o(c,d,a)*o(c,d,b)<0;}
+function renderPreview(){
+  const R=D.res,box=$('#dr-preview'),rep=$('#dr-report');
+  if(!R||!R.pts){box.innerHTML='<p class="muted" style="padding:20px;text-align:center;margin:0">Введи длину хотя бы одной стороны — появится схема в масштабе.</p>';
+    rep.innerHTML='';updHints();return;}
+  const n=R.n,pts=R.pts;let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;pts.forEach(p=>{x0=Math.min(x0,p.x);x1=Math.max(x1,p.x);y0=Math.min(y0,p.y);y1=Math.max(y1,p.y);});
+  const span=Math.max(x1-x0,y1-y0,1),pd=span*0.14,W=x1-x0+2*pd,H=y1-y0+2*pd,U=span/26;
+  const X=x=>x-x0+pd,Y=y=>y1-y+pd;const cx=pts.reduce((m,p)=>m+p.x,0)/n,cy=pts.reduce((m,p)=>m+p.y,0)/n;
+  let o=`<svg viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Контур в масштабе">`;
+  o+=`<polygon points="${pts.map(p=>X(p.x).toFixed(2)+','+Y(p.y).toFixed(2)).join(' ')}" fill="var(--block)" stroke="var(--holeStroke)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>`;
+  const a=pts[D.base],b=pts[(D.base+1)%n];o+=`<line x1="${X(a.x)}" y1="${Y(a.y)}" x2="${X(b.x)}" y2="${Y(b.y)}" stroke="var(--vis)" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+  for(let i=0;i<n;i++){const p=pts[i],q=pts[(i+1)%n];let mx=(p.x+q.x)/2,my=(p.y+q.y)/2;const dx=mx-cx,dy=my-cy,dl=Math.hypot(dx,dy)||1;mx+=dx/dl*U*1.4;my+=dy/dl*U*1.4;
+    o+=`<text x="${X(mx)}" y="${Y(my)}" font-size="${U}" text-anchor="middle" dominant-baseline="middle" fill="${i===D.base?'var(--vis)':'var(--ink)'}" font-family="Roboto Condensed,sans-serif-condensed,Arial Narrow,sans-serif" font-weight="${num(D.lens[i])>0?700:500}">С${i+1} ${num(D.lens[i])>0?'':'≈'}${fmt(R.actL[i])}</text>`;}
+  pts.forEach((p,i)=>{const dx=p.x-cx,dy=p.y-cy,dl=Math.hypot(dx,dy)||1;
+    o+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${U*0.25}" fill="var(--holeStroke)"/>`;
+    o+=`<text x="${X(p.x-dx/dl*U*1.6)}" y="${Y(p.y-dy/dl*U*1.6)}" font-size="${U*0.8}" text-anchor="middle" dominant-baseline="middle" fill="var(--muted)" font-family="Roboto,system-ui,sans-serif">Т${i+1} ${fmt(R.actA[i],0)}°</text>`;});
+  o+='</svg>';box.innerHTML=o;
+  let h='';const need=2*n-3-(R.given+R.nA);
+  if(R.self)h+='<div class="warn">Стороны пересекаются. Проверь размеры или порядок точек на эскизе.</div>';
+  if(R.bad.length)h+=`<div class="warn">Размеры не сходятся между собой: ${esc(R.bad.join('; '))}. Проверь цифры или убери лишний угол.</div>`;
+  else if(need>0)h+=`<div class="warn">Форма пока приблизительная: для точной фигуры нужно ещё ${need} ${need===1?'размер':need<5?'размера':'размеров'} — длины сторон или углы. Остальное взято с эскиза.</div>`;
+  else if(!R.self)h+='<div class="okmsg">Размеры сходятся, контур построен точно.</div>';
+  rep.innerHTML=h;updHints();
+}
+function updHints(){const R=D.res;$$('#dr-sides input[data-len]').forEach(el=>{const i=+el.dataset.len;el.placeholder=R&&R.actL?'≈ '+fmt(R.actL[i]):'м';});
+  $$('#dr-angs input[data-ang]').forEach(el=>{const i=+el.dataset.ang;el.placeholder=R&&R.actA?'≈ '+fmt(R.actA[i],0)+'°':'°';});}
+function renderDims(){const n=D.pts.length;
+  $('#dr-sides').innerHTML=D.pts.map((p,i)=>`<div class="dimrow"><b>С${i+1}<small>Т${i+1}–Т${(i+1)%n+1}</small></b><input inputmode="decimal" data-len="${i}" value="${esc(D.lens[i])}" aria-label="Длина стороны ${i+1}, м"><label class="radio"><input type="radio" name="drbase" value="${i}"${i===D.base?' checked':''}>опорная</label></div>`).join('');
+  $('#dr-angs').innerHTML=D.pts.map((p,i)=>`<div class="dimrow"><b>Т${i+1}</b><input inputmode="decimal" data-ang="${i}" value="${esc(D.angs[i])}" aria-label="Угол в точке ${i+1}, градусов"><button class="btn" type="button" data-right="${i}" aria-pressed="${num(D.angs[i])===90}">90°</button></div>`).join('');
+}
+let dT;function liveSolve(){clearTimeout(dT);dT=setTimeout(()=>{solveDraw();renderPreview();},200);}
+$('#dr-step2').addEventListener('input',ev=>{const el=ev.target;
+  if(el.dataset.len!=null){D.lens[+el.dataset.len]=el.value;liveSolve();}
+  else if(el.dataset.ang!=null){D.angs[+el.dataset.ang]=el.value;const btn=$(`[data-right="${el.dataset.ang}"]`);if(btn)btn.setAttribute('aria-pressed',num(el.value)===90?'true':'false');liveSolve();}});
+$('#dr-step2').addEventListener('change',ev=>{if(ev.target.name==='drbase'){D.base=+ev.target.value;renderPreview();}});
+$('#dr-step2').addEventListener('click',ev=>{const b=ev.target.closest('[data-right]');if(!b)return;const i=+b.dataset.right;
+  D.angs[i]=num(D.angs[i])===90?'':'90';const inp=$(`[data-ang="${i}"]`);inp.value=D.angs[i];b.setAttribute('aria-pressed',D.angs[i]?'true':'false');liveSolve();});
+function renderDraw(){
+  $('#dr-step1').hidden=D.step!==1;$('#dr-step2').hidden=D.step!==2;
+  $('#dr-title').textContent=D.step===1?'Шаг 1. Эскиз':'Шаг 2. Размеры';
+  $('#dr-foot').innerHTML=D.step===1?'<button class="btn main big" id="dr-next" type="button">Дальше: размеры</button>':'<button class="btn" id="dr-back" type="button">Назад к эскизу</button><button class="btn main" id="dr-apply" type="button">Применить к блоку</button>';
+  if(D.step===1){renderPad();$('#dr-next').onclick=toStep2;}
+  else{renderDims();solveDraw();renderPreview();$('#dr-back').onclick=()=>{D.step=1;renderDraw();};$('#dr-apply').onclick=applyDraw;}
+  $('.drawbody').scrollTop=0;
+}
+function toStep2(){if(D.pts.length<3){toast('Нужно минимум 3 точки');return;}D.closed=true;const n=D.pts.length;
+  while(D.lens.length<n)D.lens.push('');D.lens.length=n;while(D.angs.length<n)D.angs.push('');D.angs.length=n;if(D.base>=n)D.base=0;D.step=2;renderDraw();}
+function applyDraw(){solveDraw();const R=D.res;
+  if(!R||!R.pts){toast('Введи длину хотя бы одной стороны');return;}
+  if(R.self){toast('Стороны пересекаются — исправь размеры');return;}
+  const n=R.pts.length,pa=R.pts[D.base],pb=R.pts[(D.base+1)%n],ang=-Math.atan2(pb.y-pa.y,pb.x-pa.x),co=Math.cos(ang),si=Math.sin(ang);
+  const rot=R.pts.map(p=>({x:(p.x-pa.x)*co-(p.y-pa.y)*si,y:(p.x-pa.x)*si+(p.y-pa.y)*co}));
+  let x0=Infinity,y0=Infinity;rot.forEach(p=>{x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);});
+  const b=act();b.verts=rot.map(p=>({x:Math.round((p.x-x0)*100)/100,y:Math.round((p.y-y0)*100)/100}));
+  b.geo='0';b.baseEdge=D.base;b.sketch={pts:D.pts.map(p=>({x:+p.x.toFixed(2),y:+p.y.toFixed(2)})),lens:D.lens.slice(),angs:D.angs.slice(),base:D.base};
+  save();markDirty(b.id);$('#dlgDraw').close();renderForm();renderResult();
+  toast(R.bad.length?'Контур применён, но часть размеров не сошлась — проверь':'Контур применён к блоку');}
+$('#drawBtn').onclick=()=>{const b=act();
+  if(b.sketch&&b.sketch.pts&&b.sketch.pts.length>=3){D.pts=b.sketch.pts.map(p=>({x:p.x,y:p.y}));D.lens=(b.sketch.lens||[]).slice();D.angs=(b.sketch.angs||[]).slice();D.base=b.sketch.base|0;D.closed=true;}
+  else{D.pts=[];D.lens=[];D.angs=[];D.base=0;D.closed=false;}
+  D.sel=-1;D.step=1;D.res=null;$('#dlgDraw').showModal();renderDraw();};
+$('#dr-close').onclick=()=>$('#dlgDraw').close();
+
+/* ---------- вкладка «Бурение» ---------- */
+let shared={logs:[],blocks:[],shifts:[],acks:[],docs:[],ready:false,err:''};
+function otherDrilled(blockId){const set=new Set();shared.logs.forEach(l=>{if(l.blockId===blockId&&l.deviceId!==S.deviceId)Object.keys(l.holes||{}).forEach(k=>set.add(+k));});return set;}
+function renderDrill(){
+  const b=act();const G=computeBlock(b);const box=$('#drillBody');
+  if(G.error||!G.holes.length){box.innerHTML=`<div class="card"><div class="err">${esc(G.error||'В блоке нет скважин — настрой контур и сетку на вкладке «Блок».')}</div></div>`;return;}
+  const recs=S.records[b.id]||{};const oth=otherDrilled(b.id);
+  const done=n=>recs[n]||oth.has(n);
+  const next=G.holes.find(h=>!done(h.n));
+  const myCount=Object.keys(recs).filter(k=>+k<=G.holes.length).length;
+  const totalDone=G.holes.filter(h=>done(h.n)).length;
+  let mFact=0;Object.values(recs).forEach(r=>mFact+=num(r.d,0));
+  const st=n=>{const r=recs[n];return{mine:!!r,other:!r&&oth.has(n),water:r&&(r.f||[]).includes('Обводнена'),next:next&&next.n===n};};
+  const last=Object.entries(recs).sort((x,y)=>(y[1].at||'').localeCompare(x[1].at||'')).slice(0,8);
+  const dts=S.downtime[b.id]||[];
+  box.innerHTML=
+  `<div class="card"><h2>${esc(b.name)}${b.horizon?' <span class="muted" style="font-weight:500">'+esc(b.horizon)+'</span>':''}</h2>
+    <div class="progress"><div style="width:${(totalDone/G.holes.length*100).toFixed(1)}%"></div></div>
+    <div class="row muted" style="justify-content:space-between;font-size:15px"><span>Пробурено ${totalDone} из ${G.holes.length}${oth.size?` (другими сменами ${totalDone-myCount})`:''}</span><span>Мои: ${fmt(mFact)} пог. м</span></div>${S.activeShiftId&&S.shiftsData[S.activeShiftId]?'':'<div class="warn" style="margin:10px 0 0">Смена не начата — скважины не попадут в отчёт смены. <button class="btn" type="button" data-goto="shift" style="margin-top:6px">Начать смену</button></div>'}</div>`+
+  (next?`<button class="btn main big" id="markNext" type="button">Отметить скважину №${next.n} (ряд ${next.row})</button>`:`<div class="card" style="background:var(--okSoft)"><b>Блок обурен полностью.</b> Не забудь отправить записи в общий журнал.</div>`)+
+  `<div class="scheme" style="margin-top:12px" id="drillScheme">${scheme(G,b,'drill',st)}
+   <div class="legend"><span><i style="background:var(--hole)"></i>план</span><span><i style="background:var(--ok);border-color:var(--ok)"></i>пробурена мной</span>${oth.size?'<span><i style="background:var(--other);border-color:var(--other)"></i>другой сменой</span>':''}<span><i style="border-color:var(--water)"></i>обводнена</span><span><i style="border-color:var(--vis)"></i>следующая</span></div></div>
+   <p class="hint" style="margin:-4px 2px 12px">Нажми на скважину на схеме, чтобы отметить или исправить её.</p>`+
+  `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Последние записи</h2><button class="btn" id="downBtn" type="button">Записать простой</button></div>
+   ${last.length?last.map(([n,r])=>`<div class="rec"><span class="no">№${n}</span><span>${fmt(num(r.d))} м ${(r.f||[]).map(f=>`<span class="tag${f==='Обводнена'?' w':''}">${esc(f)}</span>`).join('')}${r.note?'<br><span class="t">'+esc(r.note)+'</span>':''}</span><span class="t">${tm(r.at)}</span></div>`).join(''):'<p class="muted" style="margin:8px 0 0">Записей пока нет. Отметь первую скважину кнопкой выше.</p>'}
+   ${dts.length?'<h3 style="margin:14px 0 4px;font-size:18px">Простои</h3>'+dts.slice(-5).reverse().map(d=>`<div class="rec"><span class="no" style="font-size:17px">${d.min}м</span><span>${esc(d.reason)}${d.note?' — '+esc(d.note):''}</span><span class="t">${tm(d.at)}</span></div>`).join(''):''}
+  </div>`;
+  const mn=$('#markNext');if(mn)mn.onclick=()=>openHole(next.n);
+  $('#downBtn').onclick=()=>{$('#d-min').value='';$('#d-note').value='';$('#dlgDown').showModal();};
+}
+$('#drillBody').addEventListener('click',ev=>{const go=ev.target.closest('[data-goto]');if(go){setTab(go.dataset.goto);return;}const g=ev.target.closest('#drillScheme [data-n]');if(g)openHole(+g.dataset.n);});
+
+let holeN=0;
+function openHole(n){
+  const b=act();const G=computeBlock(b);const h=G.holes.find(x=>x.n===n);if(!h)return;holeN=n;
+  const r=(S.records[b.id]||{})[n];
+  $('#h-title').textContent='Скважина №'+n;
+  $('#h-plan').textContent=`Ряд ${h.row}. Проект: ${fmt(G.depth)} м + перебур ${fmt(G.over)} м = ${fmt(G.len)} м.`+(otherDrilled(b.id).has(n)&&!r?' Уже отмечена другой сменой.':'');
+  $('#h-depth').value=r?r.d:G.len;$('#h-note').value=r?r.note||'':'';
+  $$('#h-flags button').forEach(btn=>btn.setAttribute('aria-pressed',r&&(r.f||[]).includes(btn.dataset.flag)?'true':'false'));
+  $('#h-clear').style.visibility=r?'visible':'hidden';
+  $('#dlgHole').showModal();
+}
+$('#h-flags').addEventListener('click',ev=>{const b=ev.target.closest('button');if(b)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')==='true'?'false':'true');});
+$('#h-cancel').onclick=()=>$('#dlgHole').close();
+$('#h-save').onclick=()=>{const b=act();const d=num($('#h-depth').value,-1);if(d<=0){toast('Укажи фактическую глубину');return;}
+  (S.records[b.id]=S.records[b.id]||{})[holeN]={d,f:$$('#h-flags button[aria-pressed="true"]').map(x=>x.dataset.flag),note:$('#h-note').value.trim(),at:new Date().toISOString(),op:S.operator,rig:S.rig,sh:S.shift,sid:S.activeShiftId||''};
+  save();markDirty(b.id);if(S.activeShiftId)dirtyShift(S.activeShiftId);$('#dlgHole').close();renderDrill();toast('Скважина №'+holeN+' записана');};
+$('#h-clear').onclick=()=>{const b=act();if(S.records[b.id])delete S.records[b.id][holeN];save();markDirty(b.id);$('#dlgHole').close();renderDrill();};
+$('#dlgDown').addEventListener('close',()=>{if($('#dlgDown').returnValue!=='ok')return;const m=parseInt($('#d-min').value,10);
+  if(!(m>0)){toast('Укажи длительность в минутах');return;}const b=act();
+  (S.downtime[b.id]=S.downtime[b.id]||[]).push({at:new Date().toISOString(),min:m,reason:$('#d-reason').value,note:$('#d-note').value.trim(),op:S.operator,sh:S.shift,sid:S.activeShiftId||''});
+  save();markDirty(b.id);if(S.activeShiftId)dirtyShift(S.activeShiftId);renderDrill();toast('Простой записан');});
+
+['op','rig','shift'].forEach(k=>{const el=$('#s-'+k);const key=k==='op'?'operator':k;el.value=S[key]||(k==='shift'?'День':'');
+  el.addEventListener('input',()=>{S[key]=el.value;save();renderWho();});el.addEventListener('change',()=>{S[key]=el.value;save();renderWho();});});
+function renderWho(){const b=act();$('#who').textContent=[b?b.name:'',S.operator,S.rig?'станок '+S.rig:'',S.shift].filter(Boolean).join(', ');}
+
+/* ---------- синхронизация с Google Таблицей ---------- */
+const SH_KEY='jk830-shared-v1';
+let syncing=false;
+try{const c=JSON.parse(localStorage.getItem(SH_KEY)||'null');
+  if(c){['logs','blocks','shifts','acks','docs'].forEach(k=>{if(Array.isArray(c[k]))shared[k]=c[k];});shared.at=c.at||'';shared.ready=true;}}catch(e){}
+function pendingCount(){return Object.values(S.dirty).reduce((m,x)=>m+(x|0),0)+Object.keys(S.dshifts).length+Object.keys(S.dacks).length+Object.keys(S.ddocs).length;}
+function dirtyShift(id){S.dshifts[id]=(S.dshifts[id]|0)+1;save();renderStatus();}
+function renderStatus(){const btn=$('#syncBtn');const n=pendingCount();
+  btn.classList.toggle('pending',n>0);btn.disabled=syncing;
+  btn.textContent=syncing?'Отправка…':(n>0?(navigator.onLine?`Отправить (${n})`:`Не отправлено (${n})`):'Всё отправлено');}
+function renderConn(){const el=$('#connState');if(!el)return;
+  const u=$('#cfg-url'),k=$('#cfg-key');if(document.activeElement!==u)u.value=S.cfg.url||'';if(document.activeElement!==k)k.value=S.cfg.key||'';
+  el.innerHTML=!S.cfg.url?'<span class="conn-no">Не подключено.</span> Записи копятся на телефоне и не теряются. Подключи таблицу, чтобы отправлять их в общий журнал.'
+    :(S.lastSync?`<span class="conn-ok">Подключено.</span> Последний обмен ${tm(S.lastSync)}.`:'Адрес указан. Нажми «Проверить и обновить».');}
+function buildDocs(){
+  const docs=[],now=new Date().toISOString();
+  const sent={dirty:Object.assign({},S.dirty),dshifts:Object.assign({},S.dshifts),dacks:Object.keys(S.dacks),ddocs:Object.keys(S.ddocs)};
+  Object.keys(sent.dirty).forEach(id=>{const b=S.blocks[id];if(!b)return;const G=computeBlock(b);
+    docs.push({c:'blocks',id,data:{id,name:b.name||'',horizon:b.horizon||'',geo:b.geo,verts:b.verts.map(p=>({x:num(p.x),y:num(p.y)})),
+      square:!!b.square,a:num(b.a),b:num(b.b),c:num(b.c),d:num(b.d),depth:num(b.depth),over:num(b.over),baseEdge:+b.baseEdge||0,exit:b.exit,start:b.start,
+      planned:G.error?0:G.holes.length,metersPlan:G.error?0:G.meters,updated:now,by:S.operator||''}});
+    docs.push({c:'logs',id:id+'~'+S.deviceId,data:{blockId:id,blockName:b.name||'',deviceId:S.deviceId,operator:S.operator||'',rig:S.rig||'',updated:now,
+      holes:S.records[id]||{},downtime:S.downtime[id]||[]}});});
+  Object.keys(sent.dshifts).forEach(id=>{const sh=S.shiftsData[id];if(!sh)return;const t=shiftTotals(id),fc=fuelCalc(sh);
+    const bad=INSP_ALL.filter(x=>sh.insp&&sh.insp[x.id]&&sh.insp[x.id].s==='bad').map(x=>x.l+(sh.insp[x.id].n?' ('+sh.insp[x.id].n+')':''));
+    docs.push({c:'shifts',id,data:Object.assign(JSON.parse(JSON.stringify(sh)),{deviceId:S.deviceId,holes:t.holes,meters:t.m,downMin:t.dmin,
+      fuelUsed:isFinite(fc.used)?Math.round(fc.used*10)/10:null,inspBadText:bad.join('; '),updated:now})});});
+  sent.dacks.forEach(id=>{const a=S.acks.find(x=>x.id===id);if(a)docs.push({c:'acks',id,data:a});});
+  sent.ddocs.forEach(id=>{const d=S.customDocs[id];if(d)docs.push({c:'docs',id,data:d});});
+  return{docs,sent};
+}
+async function exchange(docs){
+  const url=String(S.cfg.url||'').trim();if(!url)throw{code:'no_url'};
+  const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),60000);
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({key:S.cfg.key||'',device:S.deviceId,docs}),signal:ctl.signal,redirect:'follow'});
+    const txt=await r.text();let j;try{j=JSON.parse(txt);}catch(e){throw{code:'bad_response'};}
+    if(!j||!j.ok)throw{code:(j&&j.error)||'server',msg:j&&j.message};
+    return j;
+  }finally{clearTimeout(t);}
+}
+function applyShared(j){const d=j.data||{};
+  ['logs','blocks','shifts','acks','docs'].forEach(k=>shared[k]=Array.isArray(d[k])?d[k]:[]);
+  shared.ready=true;shared.err='';shared.at=j.at||new Date().toISOString();
+  try{localStorage.setItem(SH_KEY,JSON.stringify({logs:shared.logs,blocks:shared.blocks,shifts:shared.shifts,acks:shared.acks,docs:shared.docs,at:shared.at}));}catch(e){}
+  renderShared();
+  if($('#tab-drill').classList.contains('on'))renderDrill();
+  if($('#tab-safety').classList.contains('on'))renderSafety();
+  if($('#tab-shift').classList.contains('on'))renderShift();}
+async function sync(){
+  if(syncing)return;
+  if(!S.cfg.url){toast('Сначала подключи Google Таблицу: вкладка «Журнал»');setTab('shared');return;}
+  if(!navigator.onLine){toast('Нет интернета. Записи хранятся на телефоне — отправь, когда будет связь.');return;}
+  syncing=true;renderStatus();
+  const {docs,sent}=buildDocs();
+  try{
+    const j=await exchange(docs);
+    Object.keys(sent.dirty).forEach(id=>{if(S.dirty[id]===sent.dirty[id])delete S.dirty[id];});
+    Object.keys(sent.dshifts).forEach(id=>{if(S.dshifts[id]===sent.dshifts[id])delete S.dshifts[id];});
+    sent.dacks.forEach(id=>delete S.dacks[id]);sent.ddocs.forEach(id=>delete S.ddocs[id]);
+    S.lastSync=new Date().toISOString();save();applyShared(j);
+    toast(docs.length?'Отправлено в общий журнал':'Общий журнал обновлён');
+  }catch(e){const c=(e&&e.code)||(e&&e.name);
+    if(c==='bad_key')toast('Неверный ключ доступа. Сверь его с ключом в коде таблицы.');
+    else if(c==='AbortError')toast('Таблица долго не отвечает. Записи на телефоне, попробуй ещё раз.');
+    else if(c==='bad_response')toast('Не тот адрес или скрипт развёрнут без доступа «Все». Проверь подключение.');
+    else if(c==='server')toast('Ошибка в таблице: '+((e&&e.msg)||'неизвестная')+'. Записи сохранены на телефоне.');
+    else toast('Не получилось связаться с таблицей. Записи сохранены на телефоне — попробуй позже.');
+  }finally{syncing=false;renderStatus();renderConn();}
+}
+$('#syncBtn').onclick=sync;
+$('#cfg-url').addEventListener('input',e=>{S.cfg.url=e.target.value.trim();save();});
+$('#cfg-key').addEventListener('input',e=>{S.cfg.key=e.target.value.trim();save();});
+$('#cfg-url').addEventListener('change',renderConn);
+$('#cfg-test').onclick=()=>{if(S.cfg.url&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(S.cfg.url))toast('Адрес обычно начинается с https://script.google.com/macros/s/');sync();};
+$('#cfg-share').onclick=async()=>{
+  if(!S.cfg.url){toast('Сначала укажи адрес и ключ');return;}
+  const enc=btoa(unescape(encodeURIComponent(JSON.stringify({u:S.cfg.url,k:S.cfg.key||''})))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  const link=location.origin+location.pathname+'#cfg='+enc;
+  const text='Журнал машиниста буровой установки. Открой ссылку, установи приложение — подключение к общему журналу настроится само:\n'+link;
+  try{if(navigator.share){await navigator.share({title:'Журнал машиниста',text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  try{await navigator.clipboard.writeText(link);toast('Ссылка скопирована. Не выкладывай её в открытый доступ — в ней ключ.');}
+  catch(e){prompt('Скопируй ссылку для бригады:',link);}
+};
+function readCfgFromLink(){const m=/[#&]cfg=([\w-]+)/.exec(location.hash);if(!m)return;
+  try{let b=m[1].replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+    const c=JSON.parse(decodeURIComponent(escape(atob(b))));
+    if(c&&c.u){S.cfg={url:String(c.u),key:String(c.k||'')};save();setTimeout(()=>toast('Подключение к общему журналу настроено'),600);}}
+  catch(e){setTimeout(()=>toast('Ссылка подключения повреждена'),600);}
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  setTimeout(()=>{renderConn();renderShared();},0);}
+readCfgFromLink();window.addEventListener('hashchange',readCfgFromLink);
+window.addEventListener('online',()=>{renderStatus();if(pendingCount()&&S.cfg.url)toast('Связь появилась — можно отправить записи');});
+
+function renderShared(){
+  renderSharedExtra();
+  renderConn();
+  $('#sharedState').textContent=!S.cfg.url?'Таблица не подключена. Ниже видно только то, что записано на этом телефоне.':(shared.at?`Загружено ${tm(shared.at)}. Блоков: ${new Set([...shared.blocks.map(b=>b.id),...shared.logs.map(l=>l.blockId)]).size}. Обновляется при каждой отправке.`:'Нажми «Проверить и обновить», чтобы загрузить общий журнал.');
+  const ids=[...new Set([...shared.blocks.map(b=>b.id),...shared.logs.map(l=>l.blockId)])].filter(Boolean);
+  const bmap={};shared.blocks.forEach(b=>bmap[b.id]=b);
+  const cards=ids.map(id=>{const bi=bmap[id]||{};const logs=shared.logs.filter(l=>l.blockId===id);
+    const rows=[];logs.forEach(l=>Object.entries(l.holes||{}).forEach(([n,r])=>rows.push({n:+n,r,l})));rows.sort((x,y)=>x.n-y.n);
+    const drilled=new Set(rows.map(x=>x.n)).size;let m=0;rows.forEach(x=>m+=num(x.r.d));
+    const dts=[];logs.forEach(l=>(l.downtime||[]).forEach(d=>dts.push({...d,l})));let dmin=0;dts.forEach(d=>dmin+=d.min|0);
+    const ops=[...new Set(logs.map(l=>l.operator).filter(Boolean))];
+    const upd=[bi.updated,...logs.map(l=>l.updated)].filter(Boolean).sort().pop();
+    return{upd,html:`<details class="sb"><summary><h3>${esc(bi.name||logs[0]&&logs[0].blockName||'Блок')}${bi.horizon?' <span class="muted" style="font-weight:500">'+esc(bi.horizon)+'</span>':''}</h3>
+      <div class="muted" style="font-size:15px">Пробурено ${drilled}${bi.planned?' из '+bi.planned:''}, ${fmt(m)} пог. м${dmin?`, простои ${fmt(dmin/60)} ч`:''}${ops.length?'<br>'+esc(ops.join(', ')):''}${upd?'<br>Обновлено '+tm(upd):''}</div></summary>
+      <div class="body">${bi.verts&&!S.blocks[id]?`<button class="btn" data-take="${esc(id)}" type="button" style="margin-bottom:10px">Открыть блок у себя</button>`:''}
+      ${rows.length?`<div class="tbl"><table><thead><tr><th>№</th><th>Глубина, м</th><th>Отметки</th><th>Машинист</th><th>Время</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.n}</td><td>${fmt(num(x.r.d))}</td><td>${esc((x.r.f||[]).join(', '))}${x.r.note?' — '+esc(x.r.note):''}</td><td>${esc(x.r.op||x.l.operator||'')}</td><td>${tm(x.r.at)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">Записей бурения пока нет.</p>'}
+      ${dts.length?`<h3 style="font-size:18px;margin:12px 0 4px">Простои</h3><div class="tbl"><table><tbody>${dts.map(d=>`<tr><td>${d.min} мин</td><td>${esc(d.reason)}${d.note?' — '+esc(d.note):''}</td><td>${esc(d.op||d.l.operator||'')}</td><td>${tm(d.at)}</td></tr>`).join('')}</tbody></table></div>`:''}
+      </div></details>`};});
+  cards.sort((x,y)=>(y.upd||'').localeCompare(x.upd||''));
+  $('#sharedList').innerHTML=cards.length?cards.map(c=>c.html).join(''):(shared.ready?'<div class="card muted">В общем журнале пока пусто. Отметь скважины и нажми «Отправить» вверху.</div>':'');
+}
+$('#sharedList').addEventListener('click',ev=>{const t=ev.target.closest('[data-take]');if(!t)return;const bi=shared.blocks.find(b=>b.id===t.dataset.take);if(!bi)return;
+  S.blocks[bi.id]={id:bi.id,name:bi.name,horizon:bi.horizon,geo:bi.geo||'0',verts:bi.verts,square:bi.square,a:bi.a,b:bi.b,c:bi.c,d:bi.d,depth:bi.depth,over:bi.over,baseEdge:bi.baseEdge,exit:bi.exit,start:bi.start,rate:'',move:3,created:Date.now()};
+  S.activeId=bi.id;save();renderAll();setTab('drill');toast('Блок открыт. Скважины других смен видны на схеме.');});
+
+function csvRows(logs){
+  const head=['Блок','Горизонт','Скважина','Глубина факт, м','Отметки','Примечание','Машинист','Буровая','Смена','Время'];
+  const bmap={};shared.blocks.forEach(b=>bmap[b.id]=b);Object.values(S.blocks).forEach(b=>{if(!bmap[b.id])bmap[b.id]=b;});
+  const out=[head];logs.forEach(l=>{const bi=bmap[l.blockId]||{};Object.entries(l.holes||{}).sort((a,b)=>+a[0]-+b[0]).forEach(([n,r])=>{
+    out.push([bi.name||l.blockName||'',bi.horizon||'',n,String(num(r.d)).replace('.',','),(r.f||[]).join(', '),r.note||'',r.op||l.operator||'',r.rig||l.rig||'',r.sh||'',tm(r.at)]);});});
+  return '\uFEFF'+out.map(r=>r.map(c=>{c=String(c);return /[;"\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(';')).join('\r\n');
+}
+async function download(name,data){
+  const blob=new Blob([data],{type:'text/csv;charset=utf-8'});
+  if(/Android|iPhone|iPad/i.test(navigator.userAgent)&&navigator.canShare){
+    try{const f=new File([blob],name,{type:'text/csv'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return;}}
+    catch(e){if(e&&e.name==='AbortError')return;}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);}
+const today=()=>new Date().toISOString().slice(0,10);
+$('#csvShared').onclick=()=>{if(!shared.logs.length){toast('В общем журнале пока нет записей');return;}download(`zhurnal-bureniya-${today()}.csv`,csvRows(shared.logs));};
+$('#csvLocal').onclick=()=>{const logs=Object.keys(S.records).map(id=>({blockId:id,blockName:(S.blocks[id]||{}).name,operator:S.operator,rig:S.rig,holes:S.records[id]}));
+  if(!logs.some(l=>Object.keys(l.holes||{}).length)){toast('На телефоне пока нет записей');return;}download(`moi-zapisi-${today()}.csv`,csvRows(logs));};
+
+/* ---------- смена: осмотр, состав, моточасы, поломки ---------- */
+const INSP=[
+  {g:'Двигатель',i:[['eng_oil','Уровень масла в двигателе'],['coolant','Уровень охлаждающей жидкости'],['fuel','Топливо, нет течей топлива'],['air_f','Воздушный фильтр (индикатор засорения)'],['belts','Ремни привода, натяжение']]},
+  {g:'Компрессор',i:[['comp_oil','Уровень масла в компрессоре'],['comp_f','Фильтры и сепаратор (индикаторы)'],['comp_p','Давление воздуха на холостом ходу']]},
+  {g:'Гидравлика',i:[['hyd_oil','Уровень масла в гидробаке'],['hyd_leak','Нет течей, РВД без повреждений и перетирания']]},
+  {g:'Ходовая часть',i:[['tracks','Гусеницы: натяжение, траки, пальцы'],['final','Бортовые редукторы: нет течей'],['brake','Стояночный тормоз, управление ходом'],['jacks','Домкраты (выносные опоры)']]},
+  {g:'Буровое оборудование',i:[['mast','Мачта: фиксаторы, крепления, нет трещин'],['feed','Цепь или канат подачи: натяжение, износ'],['rot','Вращатель: течи, крепление, люфт'],['rods','Штанги: резьба, износ'],['dth','Пневмоударник и коронка: износ'],['wrench','Ключ разворота и захваты штанг'],['dust','Пылеулавливание: рукава, фильтры, очистка']]},
+  {g:'Безопасность и кабина',i:[['estop','Аварийный стоп проверен в работе'],['signal','Звуковой сигнал и сигнал заднего хода'],['lights','Фары и освещение'],['ext','Огнетушитель на месте, опломбирован'],['aid','Аптечка'],['guards','Ограждения вращающихся частей'],['steps','Поручни, ступени, площадки'],['cab','Стёкла, зеркала, панель без ошибок']]},
+  {g:'Смазка',i:[['grease','Точки смазки по карте смазки']]}
+];
+const INSP_ALL=INSP.flatMap(g=>g.i.map(([id,l])=>({id,l,g:g.g})));
+const CRIT=new Set(['estop','ext','mast','feed','brake','guards','signal','jacks']);
+const ROLES=['Машинист буровой установки','Помощник машиниста','Слесарь-ремонтник','Электрослесарь','Механик','Мастер','Стажёр'];
+const localDate=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);};
+const ruDate=iso=>{const p=String(iso||'').split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:esc(iso);};
+const curShift=()=>S.shiftsData[S.activeShiftId];
+function shiftTotals(id){let holes=0,m=0,dmin=0;
+  Object.values(S.records).forEach(rs=>Object.values(rs||{}).forEach(r=>{if(r.sid===id){holes++;m+=num(r.d);}}));
+  Object.values(S.downtime).forEach(a=>(a||[]).forEach(d=>{if(d.sid===id)dmin+=d.min|0;}));
+  return{holes,m,dmin};}
+function openBreakdowns(){const out=[];Object.values(S.shiftsData).forEach(sh=>(sh.brk||[]).forEach(b=>{if(b.st!=='fixed')out.push({b,sh});}));
+  return out.sort((x,y)=>(y.b.at||'').localeCompare(x.b.at||''));}
+const normName=n=>String(n||'').trim().toLowerCase().replace(/\s+/g,' ');
+function missingAcks(name){const nn=normName(name);if(!nn)return allDocs();const acks=allAcks();
+  return allDocs().filter(d=>!acks.some(a=>a.docId===d.id&&(a.v|0)===(d.v|0)&&normName(a.name)===nn));}
+
+function fuelCalc(sh){const f=num(sh.fuel,0),a=num(sh.tankS,NaN),b=num(sh.tankE,NaN),e=num(sh.engE,NaN)-num(sh.engS,NaN);
+  const used=isFinite(a)&&isFinite(b)?a+f-b:NaN;return{f,used,perH:isFinite(used)&&isFinite(e)&&e>0?used/e:NaN};}
+function fuelText(sh){const c=fuelCalc(sh);return `Заправлено ДТ: <b>${fmt(c.f)}</b> л. Израсходовано: <b>${isFinite(c.used)?fmt(c.used):'—'}</b> л${isFinite(c.perH)?`, <b>${fmt(c.perH)}</b> л на моточас`:''}.`+(isFinite(c.used)&&c.used<0?' <span class="st-open">Проверь остатки: расход вышел отрицательным.</span>':'');}
+function startShift(){
+  const date=$('#ns-date').value||localDate(),shift=$('#ns-shift').value,rig=$('#ns-rig').value.trim(),op=$('#ns-op').value.trim();
+  if(!op){toast('Укажи ФИО машиниста');return;}
+  S.operator=op;S.rig=rig;S.shift=shift;$('#s-op').value=op;$('#s-rig').value=rig;$('#s-shift').value=shift;
+  const id='sh-'+date+'-'+rid();
+  S.shiftsData[id]={id,date,shift,rig,operator:op,started:new Date().toISOString(),closed:null,
+    crew:[{name:op,role:ROLES[0],hours:'11'}],engS:'',engE:'',compS:'',compE:'',fuel:'',fuelBy:'',tankS:'',tankE:'',oil:'',insp:{},inspBy:'',inspAt:'',brk:[],notes:''};
+  // храним на телефоне последние 60 смен
+  const ids=Object.keys(S.shiftsData).sort((a,b)=>(S.shiftsData[b].started||'').localeCompare(S.shiftsData[a].started||''));
+  ids.slice(60).forEach(x=>{if(!S.dshifts[x]&&!(S.shiftsData[x].brk||[]).some(b=>b.st!=='fixed'))delete S.shiftsData[x];});
+  S.activeShiftId=id;save();dirtyShift(id);renderWho();renderShift();toast('Смена начата. Начни с ежесменного осмотра.');
+}
+function renderShift(){
+  const box=$('#shiftBody');const sh=curShift();const ob=openBreakdowns();
+  const brkHtml=(b,owner)=>`<div class="brk"><div class="hd"><b>${esc(b.node)}</b><span class="${b.st==='fixed'?'st-fixed':'st-open'}">${b.st==='fixed'?'Устранена':'Не устранена'}</span></div>
+    <div>${esc(b.desc)}</div>${b.act?`<div class="muted" style="font-size:15px">${esc(b.act)}</div>`:''}
+    <div class="muted" style="font-size:13px">${tm(b.at)}${b.min?`, простой ${b.min} мин`:''}${owner&&owner.id!==S.activeShiftId?`, смена ${ruDate(owner.date)} ${esc(owner.shift)}`:''}${b.st==='fixed'&&b.fixedAt?`, устранена ${tm(b.fixedAt)}${b.fixedBy?' ('+esc(b.fixedBy)+')':''}`:''}</div>
+    ${b.st!=='fixed'?`<button class="btn" type="button" data-fix="${esc(owner.id)}|${esc(b.id)}" style="margin-top:6px">Отметить устранённой</button>`:''}</div>`;
+  if(!sh){
+    const past=Object.values(S.shiftsData).sort((a,b)=>(b.started||'').localeCompare(a.started||'')).slice(0,10);
+    const h=new Date().getHours();
+    box.innerHTML=`<div class="card"><h2>Новая смена</h2><div class="grid2">
+      <label class="f">Дата<input id="ns-date" type="date" value="${localDate()}"></label>
+      <label class="f">Смена<select id="ns-shift"><option${h>=7&&h<19?' selected':''}>День</option><option${h>=7&&h<19?'':' selected'}>Ночь</option></select></label>
+      <label class="f">Машинист (ФИО)<input id="ns-op" type="text" value="${esc(S.operator)}"></label>
+      <label class="f">Буровая, №<input id="ns-rig" type="text" value="${esc(S.rig)}"></label></div>
+      <button class="btn main big" id="ns-start" type="button" style="margin-top:12px">Начать смену</button></div>`+
+    (ob.length?`<div class="card"><h2>Не устранённые поломки</h2>${ob.map(x=>brkHtml(x.b,x.sh)).join('')}</div>`:'')+
+    (past.length?`<div class="card"><h2>Прошлые смены на телефоне</h2>${past.map(p=>{const t=shiftTotals(p.id);return `<div class="rec" style="grid-template-columns:1fr auto"><span><b>${ruDate(p.date)}, ${esc(p.shift)}</b>${p.rig?' станок '+esc(p.rig):''}<br><span class="t">${esc(p.operator)}, ${t.holes} скв., ${fmt(t.m)} м${S.dshifts[p.id]?', не отправлена':''}</span></span><button class="btn" type="button" data-openshift="${esc(p.id)}">Открыть</button></div>`;}).join('')}</div>`:'');
+    $('#ns-start').onclick=startShift;return;
+  }
+  const t=shiftTotals(sh.id);
+  const checked=INSP_ALL.filter(x=>sh.insp[x.id]&&sh.insp[x.id].s).length;
+  const bad=INSP_ALL.filter(x=>sh.insp[x.id]&&sh.insp[x.id].s==='bad');
+  const crit=bad.filter(x=>CRIT.has(x.id));
+  const miss=missingAcks(sh.operator);
+  const hrs=(a,b)=>{const x=num(a,NaN),y=num(b,NaN);return isFinite(x)&&isFinite(y)&&y>=x?fmt(y-x):'—';};
+  box.innerHTML=
+  `<div class="card"><h2>Смена ${ruDate(sh.date)}, ${esc(sh.shift).toLowerCase()}</h2>
+    <p class="hint" style="margin:0">Машинист ${esc(sh.operator)}${sh.rig?', станок '+esc(sh.rig):''}. Начата ${tm(sh.started)}${sh.closed?', закрыта '+tm(sh.closed):''}.</p>
+    ${miss.length?`<div class="warn" style="margin:10px 0 0">Не подтверждено ознакомление с ТБ: ${esc(miss.map(d=>d.title).join('; '))}. <button class="btn" type="button" data-goto="safety" style="margin-top:6px">Открыть раздел ТБ</button></div>`:''}
+    ${sh.closed?`<button class="btn" id="sh-reopen" type="button" style="margin-top:10px">Вернуть смену в работу</button>`:''}</div>`+
+
+  `<div class="card"><h2>Состав смены</h2>
+    ${sh.crew.map((c,i)=>`<div class="crow"><input class="nm" type="text" data-crew="${i}" data-k="name" value="${esc(c.name)}" placeholder="Фамилия Имя Отчество" aria-label="ФИО"><select data-crew="${i}" data-k="role" aria-label="Должность">${ROLES.map(r=>`<option${r===c.role?' selected':''}>${r}</option>`).join('')}</select><input data-crew="${i}" data-k="hours" inputmode="decimal" value="${esc(c.hours)}" placeholder="часов" aria-label="Отработано часов"><button type="button" data-crewdel="${i}" aria-label="Убрать из смены">×</button></div>`).join('')}
+    <p class="hint" style="margin:6px 0 8px">Последнее поле в строке — отработано часов.</p>
+    <button class="btn" id="crewAdd" type="button">Добавить человека</button></div>`+
+
+  `<div class="card"><h2>Моточасы и расход</h2><div class="grid2">
+    <label class="f">Двигатель, начало смены<input data-sf="engS" inputmode="decimal" value="${esc(sh.engS)}"></label>
+    <label class="f">Двигатель, конец смены<input data-sf="engE" inputmode="decimal" value="${esc(sh.engE)}"></label>
+    <label class="f">Компрессор, начало<input data-sf="compS" inputmode="decimal" value="${esc(sh.compS)}" placeholder="если есть счётчик"></label>
+    <label class="f">Компрессор, конец<input data-sf="compE" inputmode="decimal" value="${esc(sh.compE)}"></label>
+    <label class="f">Заправлено ДТ, л<input data-sf="fuel" inputmode="decimal" value="${esc(sh.fuel)}"></label>
+    <label class="f">Кто заправлял (бензовоз, ФИО)<input data-sf="fuelBy" type="text" value="${esc(sh.fuelBy||'')}"></label>
+    <label class="f">Остаток ДТ в баке, начало, л<input data-sf="tankS" inputmode="decimal" value="${esc(sh.tankS||'')}"></label>
+    <label class="f">Остаток ДТ в баке, конец, л<input data-sf="tankE" inputmode="decimal" value="${esc(sh.tankE||'')}"></label>
+    <label class="f">Долито масел, что и сколько<input data-sf="oil" type="text" value="${esc(sh.oil)}"></label></div>
+    <p style="margin:10px 0 0">Двигатель за смену: <b id="engTot">${hrs(sh.engS,sh.engE)}</b> ч. Компрессор: <b id="compTot">${hrs(sh.compS,sh.compE)}</b> ч.</p>
+    <p style="margin:4px 0 0" id="fuelTot">${fuelText(sh)}</p></div>`+
+
+  `<div class="card"><h2>Ежесменный осмотр</h2>
+    <div class="progress"><div style="width:${(checked/INSP_ALL.length*100).toFixed(0)}%"></div></div>
+    <p class="hint" style="margin:0 0 6px">Проверено ${checked} из ${INSP_ALL.length}${bad.length?`, неисправностей ${bad.length}`:''}.</p>
+    ${crit.length?`<div class="crit">Критическая неисправность: ${esc(crit.map(x=>x.l).join('; '))}. Работа станка запрещена до устранения — сообщи механику и мастеру.</div>`:''}
+    ${INSP.map(g=>`<div class="igroup cond">${g.g}</div>`+g.i.map(([id,l])=>{const v=sh.insp[id]||{};return `<div class="irow"><span>${esc(l)}${CRIT.has(id)?' <span class="tag">важно</span>':''}</span><div class="seg"><button type="button" data-insp="${id}" data-v="ok" aria-pressed="${v.s==='ok'}">Норма</button><button type="button" data-insp="${id}" data-v="bad" aria-pressed="${v.s==='bad'}">Неиспр.</button></div>
+      ${v.s==='bad'?`<div class="inote"><input type="text" data-inote="${id}" value="${esc(v.n||'')}" placeholder="Что именно не так" aria-label="Описание неисправности"><button class="btn" type="button" data-tobrk="${id}">В поломки</button></div>`:''}</div>`;}).join('')).join('')}
+    <div style="margin-top:12px">${sh.inspAt?`<div class="okmsg">Осмотр подписал ${esc(sh.inspBy)}, ${tm(sh.inspAt)}.</div>`:`<button class="btn main big" id="inspSign" type="button"${checked<INSP_ALL.length?' disabled':''}>${checked<INSP_ALL.length?`Отметь все пункты (осталось ${INSP_ALL.length-checked})`:'Подписать осмотр'}</button>`}</div></div>`+
+
+  `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Поломки и неисправности</h2><button class="btn" id="brkAdd" type="button">Записать поломку</button></div>
+    ${(sh.brk||[]).length?sh.brk.slice().reverse().map(b=>brkHtml(b,sh)).join(''):'<p class="muted" style="margin:8px 0 0">В эту смену поломок не записано.</p>'}
+    ${ob.filter(x=>x.sh.id!==sh.id).length?`<h3 style="font-size:18px;margin:14px 0 0">С прошлых смен</h3>`+ob.filter(x=>x.sh.id!==sh.id).map(x=>brkHtml(x.b,x.sh)).join(''):''}</div>`+
+
+  `<div class="card"><h2>Итоги смены</h2>
+    <div class="sumline"><div><strong>${t.holes}</strong><span>скважин</span></div><div><strong>${fmt(t.m)}</strong><span>пог. м</span></div><div><strong>${fmt(t.dmin/60)}</strong><span>ч простоя</span></div></div>
+    <p class="hint" style="margin:8px 0">Скважины и простои берутся из вкладки «Бурение» за эту смену.</p>
+    <label class="f">Замечания, передача смены<textarea data-sf="notes" placeholder="Что передать следующей смене">${esc(sh.notes)}</textarea></label>
+    ${sh.closed?'':`<button class="btn dark big" id="sh-close" type="button" style="margin-top:12px">Закрыть смену</button>`}</div>`;
+}
+$('#shiftBody').addEventListener('input',ev=>{const el=ev.target;const sh=curShift();if(!sh)return;
+  if(el.dataset.sf){sh[el.dataset.sf]=el.value;save();dirtyShift(sh.id);
+    const hrs=(a,b)=>{const x=num(a,NaN),y=num(b,NaN);return isFinite(x)&&isFinite(y)&&y>=x?fmt(y-x):'—';};
+    if(/^eng/.test(el.dataset.sf))$('#engTot').textContent=hrs(sh.engS,sh.engE);
+    if(/^comp/.test(el.dataset.sf))$('#compTot').textContent=hrs(sh.compS,sh.compE);
+    if(/^(fuel|tank|eng)/.test(el.dataset.sf))$('#fuelTot').innerHTML=fuelText(sh);}
+  else if(el.dataset.crew!=null){sh.crew[+el.dataset.crew][el.dataset.k]=el.value;save();dirtyShift(sh.id);}
+  else if(el.dataset.inote){(sh.insp[el.dataset.inote]=sh.insp[el.dataset.inote]||{}).n=el.value;save();dirtyShift(sh.id);}});
+$('#shiftBody').addEventListener('change',ev=>{const el=ev.target;if(el.tagName==='SELECT'&&el.dataset.crew!=null)el.dispatchEvent(new Event('input',{bubbles:true}));});
+$('#shiftBody').addEventListener('click',ev=>{const t=ev.target.closest('button');if(!t)return;const sh=curShift();
+  if(t.dataset.openshift){S.activeShiftId=t.dataset.openshift;save();renderShift();window.scrollTo(0,0);return;}
+  if(t.dataset.goto){setTab(t.dataset.goto);return;}
+  if(t.dataset.fix){const [sid,bid]=t.dataset.fix.split('|');const o=S.shiftsData[sid];const b=o&&(o.brk||[]).find(x=>x.id===bid);
+    if(b){b.st='fixed';b.fixedAt=new Date().toISOString();b.fixedBy=S.operator||'';save();dirtyShift(sid);renderShift();toast('Поломка отмечена устранённой');}return;}
+  if(!sh)return;
+  if(t.dataset.insp){const id=t.dataset.insp,v=t.dataset.v;const cur=sh.insp[id]||{};
+    sh.insp[id]=cur.s===v?{n:cur.n||''}:{s:v,n:cur.n||''};if(sh.inspAt&&v==='bad'){sh.inspAt='';sh.inspBy='';}
+    save();dirtyShift(sh.id);renderShift();return;}
+  if(t.dataset.crewdel!=null){if(sh.crew.length<=1){toast('В смене должен быть хотя бы один человек');return;}sh.crew.splice(+t.dataset.crewdel,1);save();dirtyShift(sh.id);renderShift();return;}
+  if(t.id==='crewAdd'){sh.crew.push({name:'',role:ROLES[1],hours:sh.crew[0]?sh.crew[0].hours:'11'});save();dirtyShift(sh.id);renderShift();const ins=$$('#shiftBody .crow .nm');ins[ins.length-1].focus();return;}
+  if(t.id==='inspSign'){sh.inspBy=sh.operator||S.operator;sh.inspAt=new Date().toISOString();save();dirtyShift(sh.id);renderShift();toast('Осмотр подписан');return;}
+  if(t.dataset.tobrk){const it=INSP_ALL.find(x=>x.id===t.dataset.tobrk);const v=sh.insp[it.id]||{};openBrk(it.g,it.l+(v.n?': '+v.n:''));return;}
+  if(t.id==='brkAdd'){openBrk('Двигатель','');return;}
+  if(t.id==='sh-close'){if(!sh.inspAt&&!confirmTwice(t,'Осмотр не подписан. Нажми ещё раз, чтобы закрыть'))return;
+    if(sh.engS&&!sh.engE){toast('Заполни моточасы на конец смены');return;}
+    sh.closed=new Date().toISOString();save();dirtyShift(sh.id);S.activeShiftId=null;save();renderWho();renderShift();window.scrollTo(0,0);toast('Смена закрыта. Отправь записи в общий журнал, когда будет связь.');return;}
+  if(t.id==='sh-reopen'){sh.closed=null;save();dirtyShift(sh.id);renderShift();}
+});
+const armed=new WeakMap();
+function confirmTwice(btn,msg){const at=armed.get(btn)||0;if(Date.now()-at<4000)return true;armed.set(btn,Date.now());const old=btn.textContent;btn.textContent=msg;setTimeout(()=>{if(btn.isConnected)btn.textContent=old;},4000);return false;}
+function openBrk(node,desc){if(!curShift()){toast('Сначала начни смену');return;}
+  $('#b-node').value=node;$('#b-desc').value=desc;$('#b-act').value='';$('#b-min').value='';$('#b-st').value='open';$('#dlgBrk').showModal();}
+$('#dlgBrk').addEventListener('close',()=>{if($('#dlgBrk').returnValue!=='ok')return;const sh=curShift();if(!sh)return;
+  const desc=$('#b-desc').value.trim();if(!desc){toast('Опиши, что случилось');return;}
+  const st=$('#b-st').value;
+  (sh.brk=sh.brk||[]).push({id:'k-'+rid(),at:new Date().toISOString(),node:$('#b-node').value,desc,act:$('#b-act').value.trim(),min:parseInt($('#b-min').value,10)||0,st,
+    by:S.operator||'',fixedAt:st==='fixed'?new Date().toISOString():'',fixedBy:st==='fixed'?(S.operator||''):''});
+  save();dirtyShift(sh.id);renderShift();toast('Поломка записана');});
+
+/* ---------- техника безопасности ---------- */
+const DOCS=[
+ {id:'tb-drill',v:1,title:'Безопасность при бурении скважин',p:[
+  'К работе на станке допускается машинист, прошедший обучение, проверку знаний, инструктаж и стажировку. Работать только в исправной спецодежде и СИЗ: каска, защитные очки, респиратор, средства защиты слуха, перчатки, сигнальный жилет.',
+  'Перед сменой получить наряд-задание у мастера, ознакомиться с паспортом буровзрывных работ на блок и выполнить ежесменный осмотр станка. Работать на неисправном станке запрещено.',
+  'Станок устанавливать только на спланированной площадке, выставлять по уровню на домкратах. Не устанавливать станок на неустойчивом грунте, над пустотами, на заколах и в зоне возможного обрушения.',
+  'Расстояние от станка до верхней бровки уступа и его положение при бурении первого ряда — строго по паспорту БВР и инструкции предприятия. При признаках неустойчивости бровки работу остановить и сообщить мастеру.',
+  'При подъёме и опускании мачты в зоне её возможного падения не должно быть людей. Не поднимать мачту при ветре сильнее допустимого инструкцией изготовителя.',
+  'Во время вращения запрещено находиться у бурового става, касаться штанг руками, наращивать или разбирать став, снимать ограждения и работать с отключённой защитой.',
+  'Бурить только с включённым пылеулавливанием или пылеподавлением. Кабина должна быть закрыта.',
+  'При обнаружении отказавших зарядов, остатков ВВ, стаканов от прошлых взрывов бурение немедленно прекратить, отвести станок и сообщить мастеру. Бурить в стаканы запрещено.',
+  'Пробуренные скважины не засыпать и не заезжать на них. Устья обозначать по требованию предприятия.',
+  'Перед отсоединением воздушных шлангов сбросить давление. Не направлять струю сжатого воздуха на людей и на себя.',
+  'Ремонт, смазку, замену коронки и пневмоударника выполнять только при остановленном вращении и подаче, сброшенном давлении воздуха и гидравлики, с табличкой «Не включать — работают люди».',
+  'Работа вблизи ЛЭП — только по наряду-допуску с соблюдением охранной зоны.',
+  'При грозе работу прекратить и действовать по инструкции предприятия. При пожаре — остановить двигатель аварийным стопом, применить огнетушитель, сообщить диспетчеру.',
+  'Перед массовым взрывом по команде мастера вывести станок за границу опасной зоны в указанное место и уйти в укрытие.'
+ ]},
+ {id:'tb-move',v:1,title:'Передвижение станка по карьеру',p:[
+  'Перегон по карьеру — только с опущенной и закреплённой мачтой. Перемещение между скважинами в пределах блока с поднятой мачтой допускается только по спланированной площадке и только если это разрешено инструкцией изготовителя и предприятия.',
+  'Перед началом движения подать звуковой сигнал и убедиться, что в зоне движения нет людей и техники. Движение задним ходом — с сигналом; при плохом обзоре — с сигнальщиком.',
+  'Соблюдать скорость и уклоны, допустимые паспортом станка и правилами карьера. Не двигаться поперёк крутого склона, не разворачиваться на уклоне.',
+  'Не подъезжать к бровке ближе безопасного расстояния. Не двигаться по свежим отсыпкам, заколам, под нависающими козырьками и вдоль неустойчивых откосов.',
+  'Соблюдать схему движения в карьере, уступать дорогу груженым самосвалам. Не останавливаться на съездах, поворотах и в зоне погрузки.',
+  'Проезд под ЛЭП — только с опущенной мачтой и по согласованию. Кабели и трубопроводы переезжать только по специальным переездам.',
+  'В тёмное время, в туман, пыль или снегопад двигаться только с включённым освещением. При потере видимости — остановиться в безопасном месте.',
+  'Станок оставлять на ровной площадке вне проезжей части и зоны обрушения, на стояночном тормозе.',
+  'Подниматься в кабину и спускаться по ступеням лицом к станку, держась тремя точками опоры. Спрыгивать запрещено.',
+  'Буксировка станка — только по указанию мастера жёсткой сцепкой.'
+ ]}
+];
+function allDocs(){const m={};DOCS.forEach(d=>m[d.id]=d);shared.docs.forEach(d=>{if(d&&d.id)m[d.id]=d;});Object.values(S.customDocs).forEach(d=>{if(!m[d.id])m[d.id]=d;});
+  return Object.values(m).sort((a,b)=>(DOCS.includes(a)?0:1)-(DOCS.includes(b)?0:1));}
+function allAcks(){const m={};shared.acks.forEach(a=>{if(a&&a.id)m[a.id]=a;});S.acks.forEach(a=>m[a.id]=a);return Object.values(m).sort((a,b)=>(b.at||'').localeCompare(a.at||''));}
+function renderSafety(){
+  const acks=allAcks();
+  $('#safetyBody').innerHTML=`<div class="card"><h2>Техника безопасности</h2><p class="hint" style="margin:0">Памятки составлены по общим требованиям к буровым работам на открытых горных работах. Действующими остаются инструкции по охране труда предприятия, паспорт БВР и инструкция изготовителя станка. Мастер может добавить инструкции предприятия ниже.</p></div>`+
+  allDocs().map(d=>{const da=acks.filter(a=>a.docId===d.id&&(a.v|0)===(d.v|0));
+    return `<div class="card"><h2>${esc(d.title)}</h2><p class="hint" style="margin:0 0 4px">Редакция ${d.v|0}. Ознакомлено: ${da.length}.</p>
+    <details class="read"><summary>Читать инструкцию (${(d.p||[]).length} пунктов)</summary><ol class="advice">${(d.p||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol></details>
+    ${da.length?`<div style="margin:8px 0">${da.slice(0,12).map(a=>`<div class="ack"><b>${esc(a.name)}</b> <span class="muted">${tm(a.at)}${a.rig?', станок '+esc(a.rig):''}${S.dacks[a.id]?', не отправлено':''}</span></div>`).join('')}${da.length>12?`<div class="muted" style="font-size:14px">и ещё ${da.length-12}</div>`:''}</div>`:''}
+    <div class="grid2" style="margin-top:8px"><label class="f wide">ФИО<input type="text" data-ackname="${esc(d.id)}" value="${esc(S.operator)}"></label></div>
+    <label class="chk"><input type="checkbox" data-ackchk="${esc(d.id)}"> С инструкцией ознакомлен, обязуюсь выполнять</label>
+    <button class="btn main" type="button" data-ack="${esc(d.id)}">Подтвердить ознакомление</button></div>`;}).join('')+
+  `<div class="card"><details class="read"><summary>Добавить инструкцию предприятия</summary>
+    <label class="f">Название<input type="text" id="cd-title" placeholder="Например: Инструкция по ОТ для машиниста буровой"></label>
+    <label class="f" style="margin-top:8px">Текст — каждый пункт с новой строки<textarea id="cd-text" style="min-height:180px"></textarea></label>
+    <button class="btn dark" id="cd-save" type="button" style="margin-top:10px">Сохранить инструкцию</button></details></div>`;
+}
+$('#safetyBody').addEventListener('click',ev=>{const t=ev.target.closest('button');if(!t)return;
+  if(t.dataset.ack){const id=t.dataset.ack;const d=allDocs().find(x=>x.id===id);if(!d)return;
+    const name=$(`[data-ackname="${id}"]`).value.trim(),chk=$(`[data-ackchk="${id}"]`).checked;
+    if(!name){toast('Укажи ФИО');return;}if(!chk){toast('Поставь отметку «С инструкцией ознакомлен»');return;}
+    if(allAcks().some(a=>a.docId===id&&(a.v|0)===(d.v|0)&&normName(a.name)===normName(name))){toast('Ознакомление уже подтверждено');return;}
+    const a={id:'a-'+rid(),docId:id,docTitle:d.title,v:d.v|0,name,at:new Date().toISOString(),rig:S.rig||'',deviceId:S.deviceId};
+    S.acks.push(a);S.dacks[a.id]=1;save();renderStatus();renderSafety();toast('Ознакомление подтверждено: '+name);return;}
+  if(t.id==='cd-save'){const title=$('#cd-title').value.trim(),p=$('#cd-text').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!title||!p.length){toast('Нужны название и хотя бы один пункт');return;}
+    const d={id:'tb-'+rid(),v:1,title,p,at:new Date().toISOString(),by:S.operator||''};S.customDocs[d.id]=d;S.ddocs[d.id]=1;save();renderStatus();renderSafety();toast('Инструкция добавлена');}
+});
+
+/* ---------- общий журнал: смены, поломки, ТБ ---------- */
+function mergedShifts(){const m={};shared.shifts.forEach(x=>{if(x&&x.id)m[x.id]=x;});
+  Object.values(S.shiftsData).forEach(x=>{if(S.dshifts[x.id]||!m[x.id]){const t=shiftTotals(x.id);m[x.id]=Object.assign({},x,{holes:t.holes,meters:t.m,downMin:t.dmin,local:true});}});
+  return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.started||'').localeCompare(a.started||''));}
+function renderSharedExtra(){
+  const shs=mergedShifts();const open=[];shs.forEach(sh=>(sh.brk||[]).forEach(b=>{if(b.st!=='fixed')open.push({b,sh});}));
+  const acks=allAcks();
+  const insBad=sh=>INSP_ALL.filter(x=>sh.insp&&sh.insp[x.id]&&sh.insp[x.id].s==='bad');
+  const h=(a,b)=>{const x=num(a,NaN),y=num(b,NaN);return isFinite(x)&&isFinite(y)&&y>=x?fmt(y-x):'—';};
+  $('#sharedExtra').innerHTML=
+  (open.length?`<div class="card"><h2>Не устранённые поломки (${open.length})</h2>${open.map(({b,sh})=>`<div class="brk"><div class="hd"><b>${esc(b.node)}</b><span class="st-open">Не устранена</span></div><div>${esc(b.desc)}</div><div class="muted" style="font-size:13px">${tm(b.at)}, станок ${esc(sh.rig||'—')}, ${esc(sh.operator||'')}${b.min?`, простой ${b.min} мин`:''}</div></div>`).join('')}</div>`:'')+
+  `<h2 class="cond" style="margin:16px 2px 8px;font-size:22px">Смены</h2>`+
+  (shs.length?shs.slice(0,40).map(sh=>{const bad=insBad(sh);const crew=(sh.crew||[]).filter(c=>c.name);
+    return `<details class="sb"><summary><h3>${ruDate(sh.date)}, ${esc(String(sh.shift||'').toLowerCase())}${sh.rig?', станок '+esc(sh.rig):''}</h3>
+      <div class="muted" style="font-size:15px">${esc(sh.operator||'')} — ${sh.holes|0} скв., ${fmt(num(sh.meters))} пог. м, двигатель ${h(sh.engS,sh.engE)} ч${sh.fuel?`, ДТ ${esc(sh.fuel)} л`:''}${(sh.brk||[]).length?`, поломок ${sh.brk.length}`:''}${bad.length?`, замечаний осмотра ${bad.length}`:''}${sh.closed?'':', смена открыта'}${sh.local&&S.dshifts[sh.id]?', не отправлена':''}</div></summary>
+      <div class="body">
+        <div class="tbl"><table><thead><tr><th>ФИО</th><th>Должность</th><th>Часов</th></tr></thead><tbody>${crew.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.role)}</td><td>${esc(c.hours)}</td></tr>`).join('')||'<tr><td colspan="3" class="muted">Состав не указан</td></tr>'}</tbody></table></div>
+        <ul class="facts" style="margin-top:10px"><li>Моточасы двигателя <b>${esc(sh.engS||'—')} → ${esc(sh.engE||'—')}</b></li><li>Компрессор <b>${h(sh.compS,sh.compE)} ч</b></li><li>Заправлено ДТ <b>${esc(sh.fuel||'—')} л</b></li><li>Расход ДТ <b>${isFinite(fuelCalc(sh).used)?fmt(fuelCalc(sh).used)+' л':'—'}</b></li><li>Простои <b>${fmt((sh.downMin|0)/60)} ч</b></li></ul>
+        ${sh.oil?`<p style="margin:8px 0 0">Масла: ${esc(sh.oil)}</p>`:''}
+        <p style="margin:8px 0 0">Осмотр: ${sh.inspAt?`подписал ${esc(sh.inspBy)}, ${tm(sh.inspAt)}`:'<span class="st-open">не подписан</span>'}${bad.length?'. Неисправно: '+esc(bad.map(x=>x.l+(sh.insp[x.id].n?' ('+sh.insp[x.id].n+')':'')).join('; ')):''}</p>
+        ${(sh.brk||[]).length?`<h3 style="font-size:18px;margin:12px 0 0">Поломки</h3>${sh.brk.map(b=>`<div class="brk"><div class="hd"><b>${esc(b.node)}</b><span class="${b.st==='fixed'?'st-fixed':'st-open'}">${b.st==='fixed'?'Устранена':'Не устранена'}</span></div><div>${esc(b.desc)}</div>${b.act?`<div class="muted" style="font-size:15px">${esc(b.act)}</div>`:''}</div>`).join('')}`:''}
+        ${sh.notes?`<p style="margin:10px 0 0"><b>Передача смены:</b> ${esc(sh.notes)}</p>`:''}
+      </div></details>`;}).join(''):'<div class="card muted">Смен в журнале пока нет.</div>')+
+  `<h2 class="cond" style="margin:16px 2px 8px;font-size:22px">Ознакомление с ТБ</h2>`+
+  (acks.length?`<div class="card"><div class="tbl"><table><thead><tr><th>ФИО</th><th>Инструкция</th><th>Ред.</th><th>Когда</th></tr></thead><tbody>${acks.slice(0,80).map(a=>`<tr><td>${esc(a.name)}</td><td>${esc(a.docTitle)}</td><td>${a.v|0}</td><td>${tm(a.at)}</td></tr>`).join('')}</tbody></table></div></div>`:'<div class="card muted">Подтверждений пока нет.</div>');
+}
+const csvJoin=rows=>'\uFEFF'+rows.map(r=>r.map(c=>{c=String(c==null?'':c);return /[;"\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(';')).join('\r\n');
+$('#csvShifts').onclick=()=>{const shs=mergedShifts();if(!shs.length){toast('Смен пока нет');return;}
+  const rows=[['Дата','Смена','Буровая','Машинист','Состав (ФИО, должность, часы)','Моточасы нач.','Моточасы кон.','Двигатель, ч','Компрессор, ч','Заправлено ДТ, л','Кто заправлял','Остаток ДТ нач., л','Остаток ДТ кон., л','Расход ДТ, л','Скважин','Пог. м','Простой, мин','Осмотр','Замечания осмотра','Поломки','Передача смены']];
+  shs.forEach(sh=>{const e=num(sh.engE,NaN)-num(sh.engS,NaN),c=num(sh.compE,NaN)-num(sh.compS,NaN);
+    rows.push([ruDate(sh.date),sh.shift,sh.rig,sh.operator,(sh.crew||[]).filter(x=>x.name).map(x=>`${x.name}, ${x.role}, ${x.hours} ч`).join(' | '),sh.engS,sh.engE,isFinite(e)?String(e).replace('.',','):'',isFinite(c)?String(c).replace('.',','):'',sh.fuel,sh.fuelBy||'',sh.tankS||'',sh.tankE||'',isFinite(fuelCalc(sh).used)?String(Math.round(fuelCalc(sh).used*10)/10).replace('.',','):'',sh.holes|0,String(num(sh.meters)).replace('.',','),sh.downMin|0,
+      sh.inspAt?`${sh.inspBy} ${tm(sh.inspAt)}`:'не подписан',INSP_ALL.filter(x=>sh.insp&&sh.insp[x.id]&&sh.insp[x.id].s==='bad').map(x=>x.l+(sh.insp[x.id].n?' ('+sh.insp[x.id].n+')':'')).join('; '),
+      (sh.brk||[]).map(b=>`${b.node}: ${b.desc} [${b.st==='fixed'?'устранена':'не устранена'}]`).join('; '),sh.notes]);});
+  download(`smeny-${today()}.csv`,csvJoin(rows));};
+$('#csvAcks').onclick=()=>{const acks=allAcks();if(!acks.length){toast('Подтверждений пока нет');return;}
+  download(`oznakomlenie-tb-${today()}.csv`,csvJoin([['ФИО','Инструкция','Редакция','Дата и время','Буровая']].concat(acks.map(a=>[a.name,a.docTitle,a.v|0,tm(a.at),a.rig]))));};
+
+/* ---------- вкладки ---------- */
+function setTab(t){S.tab=t;save();$$('section.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));$$('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  if(t==='drill')renderDrill();if(t==='shared')renderShared();if(t==='shift')renderShift();if(t==='safety')renderSafety();window.scrollTo(0,0);}
+$$('nav.tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+window.addEventListener('online',renderStatus);window.addEventListener('offline',renderStatus);
+
+function renderAll(){renderBlockSel();renderForm();renderResult();renderWho();renderStatus();if(S.tab==='drill')renderDrill();}
+renderAll();setTab(S.tab||'block');
+/* ---------- установка и обновление ---------- */
+const isStandalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+let installEvt=null;
+function renderInstall(){const card=$('#installCard');
+  if(isStandalone()||S.installHidden){card.hidden=true;return;}
+  card.hidden=false;$('#installBtn').hidden=!installEvt;
+  $('#installHint').textContent=installEvt?'Установи один раз, пока есть интернет. Дальше журнал открывается со значка без связи.'
+    :isIOS?'В Safari нажми «Поделиться», затем «На экран „Домой“». Дальше журнал открывается со значка без связи.'
+    :'В меню браузера (⋮) выбери «Установить приложение» или «Добавить на главный экран». Дальше журнал открывается без связи.';}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;renderInstall();});
+window.addEventListener('appinstalled',()=>{installEvt=null;renderInstall();toast('Приложение установлено. Открывай его со значка.');});
+$('#installBtn').onclick=async()=>{if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice;}catch(e){}installEvt=null;renderInstall();};
+$('#installHide').onclick=()=>{S.installHidden=true;save();renderInstall();};
+renderInstall();
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persisted().then(p=>{if(!p)navigator.storage.persist().catch(()=>{});}).catch(()=>{});}
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  let reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloading)return;reloading=true;location.reload();});
+  navigator.serviceWorker.register('sw.js').then(reg=>{
+    const offer=w=>{if(!w)return;$('#updBar').hidden=false;$('#updBtn').onclick=()=>{save();w.postMessage('skip');};};
+    if(reg.waiting&&navigator.serviceWorker.controller)offer(reg.waiting);
+    reg.addEventListener('updatefound',()=>{const w=reg.installing;if(!w)return;
+      w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)offer(w);});});
+    const check=()=>{if(navigator.onLine)reg.update().catch(()=>{});};
+    setInterval(check,3*3600*1000);window.addEventListener('online',check);
+  }).catch(()=>{});
+}
+
+})();
+</script>
+</body>
+</html>
