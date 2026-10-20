@@ -1,6 +1,6 @@
 /* Журнал машиниста буровой установки — офлайн-кэш.
    При выпуске новой версии увеличь номер VERSION, иначе телефоны не получат обновление. */
-const VERSION = 'jk830-v3';
+const VERSION = 'jk830-v4';
 const FILES = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -10,7 +10,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith('jk830-') && k !== VERSION).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -24,6 +24,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // запросы к Google Таблице идут мимо кэша
+  if (url.pathname.includes('/sklad/')) return; // приложение «Склад» обслуживает свой кэш
   if (req.mode === 'navigate') {
     e.respondWith(caches.match('index.html').then(r => r || fetch(req)));
     return;
