@@ -121,8 +121,8 @@ details.sb .body{padding:0 14px 14px}
 .tbl th{color:var(--muted);font-weight:500}
 .muted{color:var(--muted)}
 
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs button{border:0;background:transparent;min-height:62px;padding:0 2px;font:600 16px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;color:var(--muted);border-top:3px solid transparent}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{border:0;background:transparent;min-height:62px;padding:0 1px;font:600 15px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;color:var(--muted);border-top:3px solid transparent}
 nav.tabs button.on{color:var(--ink);border-top-color:var(--vis)}
 
 dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink);max-height:90vh}
@@ -185,6 +185,14 @@ details.read[open] summary{margin-bottom:6px}
 .zb{min-width:52px;font-size:22px;line-height:1}
 .ovl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 8px 6px;font-size:14px;color:var(--muted)}
 .ovl input[type=range]{flex:1;min-width:120px;accent-color:var(--vis)}
+.splink{all:unset;box-sizing:border-box;display:block;width:100%;padding:9px 4px;border-bottom:1px solid var(--line);cursor:pointer;line-height:1.35}
+.splink:focus-visible,.sphit:focus-visible{outline:3px solid var(--vis)}
+.sphit{all:unset;box-sizing:border-box;display:block;width:100%;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer;font-size:15px;line-height:1.4}
+.sphit .sub{font-size:13px;color:var(--muted);margin-bottom:2px}
+mark{background:var(--visSoft);color:inherit;padding:0 1px;border-radius:2px}
+.sptext{font-size:16px;line-height:1.55;white-space:normal}
+#spImgBox{overflow:auto;background:#fff;border-radius:8px}
+#spImg{display:block;width:100%;height:auto}
 #toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bar);color:var(--barInk);padding:10px 16px;border-radius:8px;font-size:15px;max-width:92vw;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.on{opacity:1}
 
@@ -282,6 +290,9 @@ details.read[open] summary{margin-bottom:6px}
   <!-- ===== ТБ ===== -->
   <section class="tab" id="tab-safety"><div id="safetyBody"></div></section>
 
+  <!-- ===== СПРАВОЧНИК ===== -->
+  <section class="tab" id="tab-sprav"><div id="spravBody"></div></section>
+
   <!-- ===== ОБЩИЙ ЖУРНАЛ ===== -->
   <section class="tab" id="tab-shared">
     <div class="card">
@@ -321,6 +332,7 @@ details.read[open] summary{margin-bottom:6px}
   <button type="button" data-tab="drill">Бурение</button>
   <button type="button" data-tab="shift">Смена</button>
   <button type="button" data-tab="safety">ТБ</button>
+  <button type="button" data-tab="sprav">Справка</button>
   <button type="button" data-tab="shared">Журнал</button>
 </nav>
 
@@ -411,6 +423,16 @@ details.read[open] summary{margin-bottom:6px}
   </div>
   <div class="row" style="justify-content:flex-end"><button class="btn ghost" value="cancel">Отмена</button><button class="btn main" value="ok">Записать</button></div>
 </form></dialog>
+
+<dialog id="dlgSp" class="full"><div class="drawwrap">
+  <div class="drawhead"><h3 style="font-size:19px;line-height:1.15"><span id="spTitle"></span><small id="spSub" style="display:block;font:400 13px Roboto,system-ui,sans-serif;opacity:.8"></small></h3><button class="btn" id="spClose" type="button">Закрыть</button></div>
+  <div class="row" style="padding:8px 12px;background:var(--card);border-bottom:1px solid var(--line)">
+    <div class="chips" style="margin:0"><button type="button" id="spModeT" aria-pressed="true">Текст</button><button type="button" id="spModeI" aria-pressed="false">Страница</button></div>
+    <span id="spZ" class="row" style="margin-left:auto"><button class="btn" id="spZout" type="button" aria-label="Уменьшить">−</button><button class="btn" id="spZin" type="button" aria-label="Увеличить">+</button></span>
+  </div>
+  <div class="drawbody" id="spScroll"><div id="spText"></div><div id="spImgBox" hidden><img id="spImg" alt="Страница инструкции"></div></div>
+  <div class="drawfoot"><button class="btn" id="spPrev" type="button">← Пред.</button><button class="btn" id="spNext" type="button">След. →</button></div>
+</div></dialog>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -1380,9 +1402,103 @@ $('#csvShifts').onclick=()=>{const shs=mergedShifts();if(!shs.length){toast('С�
 $('#csvAcks').onclick=()=>{const acks=allAcks();if(!acks.length){toast('Подтверждений пока нет');return;}
   download(`oznakomlenie-tb-${today()}.csv`,csvJoin([['ФИО','Инструкция','Редакция','Дата и время','Буровая']].concat(acks.map(a=>[a.name,a.docTitle,a.v|0,tm(a.at),a.rig]))));};
 
+/* ---------- справочник по инструкции ---------- */
+const SPR=(()=>{let op=null;
+  const open=()=>op||(op=new Promise((res,rej)=>{const r=indexedDB.open('jk830-sprav',1);
+    r.onupgradeneeded=()=>{r.result.createObjectStore('kv');r.result.createObjectStore('img');};r.onsuccess=()=>res(r.result);r.onerror=()=>{op=null;rej(r.error);};}));
+  const run=(store,mode,fn)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction(store,mode);const q=fn(t.objectStore(store));
+    t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error);}));
+  return{get:(s,k)=>run(s,'readonly',st=>st.get(k)),
+    putMany:(s,obj)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction(s,'readwrite');const st=t.objectStore(s);Object.entries(obj).forEach(([k,v])=>st.put(v,k));t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error);})),
+    clear:s=>run(s,'readwrite',st=>st.clear())};})();
+let SP_DATA=null,SP_IDX=null,spView='home',spQuery='',spBusy=false;
+const ruNorm=s=>String(s||'').toLowerCase().replace(/ё/g,'е');
+const ENDS=['иями','ями','ами','ого','его','ому','ему','ыми','ими','ией','иях','ах','ях','ов','ев','ей','ой','ий','ый','ая','яя','ое','ее','ую','юю','ом','ем','ам','ям','ия','ие','ии','ью','а','я','о','е','и','ы','у','ю','ь'];
+function stem(w){w=ruNorm(w);if(/^[0-9a-z.\-×x/]+$/.test(w))return w;for(const e of ENDS){if(w.length-e.length>=4&&w.endsWith(e))return w.slice(0,-e.length);}return w;}
+const WORD=/[0-9a-zа-яё][0-9a-zа-яё.\-×/]*/gi;
+function buildIndex(){SP_IDX=SP_DATA.pages.map(p=>{const words=(ruNorm(p.t).match(WORD)||[]);const head=ruNorm(p.c||'');return{words,head};});}
+function spSearch(q){const terms=[...new Set((ruNorm(q).match(WORD)||[]).filter(w=>w.length>1).map(stem))];if(!terms.length)return{terms,pages:[],secs:[]};
+  const res=[];
+  SP_DATA.pages.forEach((p,k)=>{const ix=SP_IDX[k];let score=0,hit=0;
+    terms.forEach(t=>{let c=0;for(const w of ix.words)if(w.startsWith(t))c++;if(c){hit++;score+=Math.min(c,6)+(ix.head.includes(t)?4:0);}});
+    if(hit&&p.c!=='Содержание')res.push({p,score:score+hit*10,hit});});
+  const full=res.filter(r=>r.hit===terms.length);const list=(full.length?full:res).sort((a,b)=>b.hit-a.hit||b.score-a.score).slice(0,30);
+  const secs=SP_DATA.toc.filter(e=>e.lvl>0&&terms.every(t=>(ruNorm(e.title).match(WORD)||[]).some(w=>w.startsWith(t)))).sort((a,b)=>a.title.length-b.title.length).slice(0,6);
+  return{terms,pages:list,secs,partial:!full.length};}
+function snippet(text,terms,len){const low=ruNorm(text);let best=0,bs=-1;
+  const pos=[];terms.forEach(t=>{const re=new RegExp('(^|[^0-9a-zа-я])'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');let m;while((m=re.exec(low))){pos.push(m.index+m[1].length);if(pos.length>400)break;}});
+  pos.sort((a,b)=>a-b);for(const s of pos){const n=pos.filter(x=>x>=s&&x<s+len).length;if(n>bs){bs=n;best=s;}}
+  const a=Math.max(0,best-40),b=Math.min(text.length,a+len);return(a>0?'…':'')+text.slice(a,b).replace(/\s+/g,' ')+(b<text.length?'…':'');}
+function hl(text,terms){let h=esc(text);terms.forEach(t=>{if(t.length<2)return;const re=new RegExp('(^|[^0-9a-zа-яё])('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[0-9a-zа-яё]*)','gi');h=h.replace(re,'$1<mark>$2</mark>');});return h;}
+const docShort=id=>{const d=SP_DATA.docs.find(x=>x.id===id);return d?d.short:id;};
+const pageLabel=p=>p.d==='m'?(p.n?`стр. ${p.n}`:`лист ${p.i}`):`${docShort(p.d)}${SP_DATA.docs.find(x=>x.id===p.d).pages>1?', лист '+p.i:''}`;
+async function spLoad(){if(SP_DATA)return SP_DATA;try{const d=await SPR.get('kv','pkg');if(d){SP_DATA=d;buildIndex();}}catch(e){}return SP_DATA;}
+async function renderSprav(){const box=$('#spravBody');await spLoad();
+  if(!SP_DATA){box.innerHTML=`<div class="card"><h2>Справочник по JK830-2</h2>
+    <p style="margin:0 0 10px">Инструкция по эксплуатации и ТО, плановое обслуживание, электросхема, схемы гидравлики и пневматики, каталог шлангов. Поиск работает без интернета и показывает точный текст и страницу инструкции.</p>
+    <p class="hint">Справочник не лежит на сайте: инструкция — документ производителя и дилера. Его загружают один раз из файла <b>spravochnik-jk830.json</b> (около 14 МБ), который передаёт мастер или механик.</p>
+    <label class="btn main big" style="display:flex;align-items:center;justify-content:center;cursor:pointer">Загрузить справочник из файла<input type="file" id="spFile" accept=".json,application/json" hidden></label>
+    <p class="hint" id="spMsg" style="margin:10px 0 0"></p></div>`;
+    $('#spFile').onchange=spImport;return;}
+  const v=spView;
+  box.innerHTML=`<div class="card" style="padding:10px">
+    <div class="row" style="flex-wrap:nowrap"><input id="spQ" type="search" placeholder="Что найти: натяжение гусеницы, масло компрессора…" value="${esc(spQuery)}" style="flex:1" aria-label="Поиск по инструкции"><button class="btn main" id="spGo" type="button">Найти</button></div>
+    <div class="chips" style="margin:10px 0 0">${[['home','Разделы'],['to','Плановое ТО'],['schemes','Схемы'],['reg','Регламент компании']].map(([k,l])=>`<button type="button" data-spv="${k}" aria-pressed="${v===k}">${l}</button>`).join('')}</div></div>
+    <div id="spOut"></div>
+    <div class="card"><p class="hint" style="margin:0 0 8px">В справочнике: ${esc(SP_DATA.docs.map(d=>d.short).join(', '))}. Составлен ${esc(String(SP_DATA.made||'').split('-').reverse().join('.'))}. Это текст документов производителя без изменений; при сомнениях сверяйся с бумажной инструкцией и механиком.</p>
+    <label class="btn" style="display:inline-flex;align-items:center;cursor:pointer">Заменить файл справочника<input type="file" id="spFile" accept=".json,application/json" hidden></label> <span class="hint" id="spMsg"></span></div>`;
+  $('#spFile').onchange=spImport;
+  $('#spQ').addEventListener('keydown',e=>{if(e.key==='Enter')$('#spGo').click();});
+  $('#spGo').onclick=()=>{spQuery=$('#spQ').value.trim();spView=spQuery?'search':'home';renderSpOut();};
+  box.querySelectorAll('[data-spv]').forEach(b=>b.onclick=()=>{spView=b.dataset.spv;spQuery='';$('#spQ').value='';renderSprav();});
+  renderSpOut();}
+function renderSpOut(){const out=$('#spOut');if(!out)return;const D=SP_DATA;
+  if(spView==='search'){const r=spSearch(spQuery);
+    out.innerHTML=(r.secs.length?`<div class="card"><h2>Разделы</h2>${r.secs.map(e=>`<button class="splink" type="button" data-spp="m:${e.i}" data-spq="1"><b>${esc(e.num)}</b> ${hl(e.title,r.terms)} <span class="muted">стр. ${e.pg}</span></button>`).join('')}</div>`:'')+
+      (r.pages.length?`<div class="card"><h2>Найдено на страницах${r.partial?' (не все слова)':''}</h2>${r.pages.map(x=>`<button class="sphit" type="button" data-spp="${x.p.d}:${x.p.i}" data-spq="1"><div class="sub"><b>${esc(pageLabel(x.p))}</b>${x.p.c?' · '+esc(x.p.c):''}${x.p.d!=='m'?' · '+esc(docShort(x.p.d)):''}</div><div>${hl(snippet(x.p.t,r.terms,220),r.terms)}</div></button>`).join('')}</div>`
+        :`<div class="card muted">Ничего не нашлось. Попробуй другое слово: например «гусениц», «компрессор», «фильтр», «натяж».</div>`);return;}
+  if(spView==='to'){const last=lastEngineHours();
+    out.innerHTML=`<div class="card"><h2>Плановое ТО по инструкции</h2><p class="hint" style="margin:0">Интервалы — в моточасах двигателя, по главе III инструкции. Нажми на пункт, чтобы открыть порядок работ.${last?` Последние моточасы в журнале: <b>${fmt(last.h,0)}</b> (${ruDate(last.date)}).`:''}</p></div>`+
+      D.sched.map(s=>`<div class="card"><h2>${esc(s.title)}</h2>${s.items.map(it=>it.i?`<button class="splink" type="button" data-spp="m:${it.i}"><b>${esc(it.sec.split(' ')[0])}</b> ${esc(it.title)}</button>`:`<div class="splink" style="cursor:default">${esc(it.title)}</div>`).join('')}</div>`).join('');return;}
+  if(spView==='reg'){const cols=['Ежедневно','50 ч / неделя','250 ч / месяц','500 ч / 3 мес','1000 ч / 6 мес','1500 ч / 9 мес','2000 ч / 12 мес'];
+    out.innerHTML=`<div class="card"><h2>Регламент обслуживания (таблица компании)</h2><div class="warn">Часть сроков в этой таблице отличается от инструкции производителя (например, смазка гусеницы, очистка радиаторов, замена масла ходовой коробки и обратного гидрофильтра). При расхождении сверяйся с «Плановым ТО» по инструкции и уточняй у механика.</div>
+      ${[...new Set(D.reg.map(r=>r.g))].map(g=>`<h3 style="font-size:18px;margin:12px 0 4px">${esc(g)}</h3>${D.reg.filter(r=>r.g===g).map(r=>`<div class="rec" style="grid-template-columns:1fr auto"><span>${esc(r.t)}</span><span class="tag">${esc(r.w.join(', ')||'—')}</span></div>`).join('')}`).join('')}</div>`;return;}
+  if(spView==='schemes'){const list=D.docs.filter(d=>d.id!=='m');
+    out.innerHTML=`<div class="card"><h2>Схемы и каталоги</h2>${list.map(d=>`<div style="margin-bottom:10px"><b>${esc(d.title)}</b><div class="row" style="margin-top:6px">${Array.from({length:d.pages},(_,k)=>`<button class="btn" type="button" data-spp="${d.id}:${k+1}">${d.pages>1?'Лист '+(k+1):'Открыть'}</button>`).join('')}</div></div>`).join('')}</div>`;return;}
+  // разделы
+  const toc=D.toc;out.innerHTML=`<div class="card"><h2>Содержание инструкции</h2><p class="hint">${esc(D.docs[0].title)}</p>${toc.map(e=>e.lvl===0?`<h3 style="font-size:19px;margin:14px 0 4px">${esc(e.num)} ${esc(e.title)}</h3>`:`<button class="splink" type="button" data-spp="m:${e.i}" style="padding-left:${(e.lvl-1)*14+4}px">${e.lvl===1?'<b>':''}${esc(e.num)} ${esc(e.title)}${e.lvl===1?'</b>':''} <span class="muted">${e.pg}</span></button>`).join('')}</div>`;}
+function lastEngineHours(){let best=null;Object.values(S.shiftsData||{}).forEach(sh=>{const h=num(sh.engE,NaN)||num(sh.engS,NaN);if(isFinite(h)&&(!best||(sh.date||'')>(best.date||'')))best={h,date:sh.date};});return best;}
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-spp]');if(!b)return;const [d,i]=b.dataset.spp.split(':');spOpenPage(d,+i,b.dataset.spq?spSearch(spQuery).terms:[]);});
+let spCur=null,spUrl='',spZoom=1;
+async function spOpenPage(d,i,terms){const p=SP_DATA.pages.find(x=>x.d===d&&x.i===i);if(!p)return;spCur={d,i,terms:terms||[]};
+  const doc=SP_DATA.docs.find(x=>x.id===d),hasText=p.t&&p.t.replace(/\s/g,'').length>40,pic=d!=='m'||!hasText;
+  $('#spTitle').textContent=`${doc.short} · ${pageLabel(p)}`;$('#spSub').textContent=p.c||doc.title;
+  $('#spText').innerHTML=hasText?`<div class="sptext">${hl(p.t,spCur.terms).replace(/\n/g,'<br>')}</div>`:'<p class="muted">На этой странице только рисунок или схема — смотри вкладку «Страница».</p>';
+  $('#spPrev').disabled=!SP_DATA.pages.some(x=>x.d===d&&x.i===i-1);$('#spNext').disabled=!SP_DATA.pages.some(x=>x.d===d&&x.i===i+1);
+  spZoom=1;setSpMode(pic?'img':'text');if(!$('#dlgSp').open)$('#dlgSp').showModal();$('#spScroll').scrollTop=0;
+  if(spUrl){URL.revokeObjectURL(spUrl);spUrl='';}$('#spImg').removeAttribute('src');
+  try{const b64=await SPR.get('img',d+'-'+i);if(b64&&spCur.d===d&&spCur.i===i){const bin=atob(b64),arr=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)arr[k]=bin.charCodeAt(k);
+    spUrl=URL.createObjectURL(new Blob([arr],{type:'image/jpeg'}));$('#spImg').src=spUrl;}}catch(e){}}
+function setSpMode(m){$('#spText').hidden=m!=='text';$('#spImgBox').hidden=m!=='img';$('#spZ').hidden=m!=='img';
+  $('#spModeT').setAttribute('aria-pressed',m==='text');$('#spModeI').setAttribute('aria-pressed',m==='img');$('#spImg').style.width=(spZoom*100)+'%';}
+$('#spModeT').onclick=()=>setSpMode('text');$('#spModeI').onclick=()=>setSpMode('img');
+$('#spZin').onclick=()=>{spZoom=Math.min(4,spZoom*1.5);$('#spImg').style.width=(spZoom*100)+'%';};
+$('#spZout').onclick=()=>{spZoom=Math.max(1,spZoom/1.5);$('#spImg').style.width=(spZoom*100)+'%';};
+$('#spPrev').onclick=()=>spOpenPage(spCur.d,spCur.i-1,spCur.terms);$('#spNext').onclick=()=>spOpenPage(spCur.d,spCur.i+1,spCur.terms);
+$('#spClose').onclick=()=>$('#dlgSp').close();
+async function spImport(ev){const f=ev.target.files&&ev.target.files[0];ev.target.value='';if(!f||spBusy)return;spBusy=true;const msg=$('#spMsg');
+  try{msg.textContent='Читаю файл…';const pkg=JSON.parse(await f.text());
+    if(!pkg||pkg.kind!=='jk830-sprav'||!Array.isArray(pkg.pages))throw new Error('Это не файл справочника JK830-2');
+    msg.textContent='Сохраняю в память телефона…';const img=pkg.img||{};delete pkg.img;
+    await SPR.clear('img');const keys=Object.keys(img);for(let k=0;k<keys.length;k+=20){const part={};keys.slice(k,k+20).forEach(x=>part[x]=img[x]);await SPR.putMany('img',part);msg.textContent=`Сохраняю страницы: ${Math.min(k+20,keys.length)} из ${keys.length}`;}
+    await SPR.putMany('kv',{pkg});SP_DATA=pkg;buildIndex();if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+    toast('Справочник загружен и работает без интернета');renderSprav();}
+  catch(e){msg.textContent='Не удалось загрузить: '+(e&&e.message?e.message:'файл повреждён или не хватает памяти');}
+  finally{spBusy=false;}}
+
 /* ---------- вкладки ---------- */
 function setTab(t){S.tab=t;save();$$('section.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));$$('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  if(t==='drill')renderDrill();if(t==='shared')renderShared();if(t==='shift')renderShift();if(t==='safety')renderSafety();window.scrollTo(0,0);}
+  if(t==='drill')renderDrill();if(t==='shared')renderShared();if(t==='shift')renderShift();if(t==='safety')renderSafety();if(t==='sprav')renderSprav();window.scrollTo(0,0);}
 $$('nav.tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 window.addEventListener('online',renderStatus);window.addEventListener('offline',renderStatus);
 
