@@ -122,7 +122,7 @@ details.sb .body{padding:0 14px 14px}
 .muted{color:var(--muted)}
 
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs button{border:0;background:transparent;min-height:62px;padding:0 1px;font:600 15px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;color:var(--muted);border-top:3px solid transparent}
+nav.tabs button{border:0;background:transparent;min-height:62px;padding:0 1px;font:600 14px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif;color:var(--muted);border-top:3px solid transparent}
 nav.tabs button.on{color:var(--ink);border-top-color:var(--vis)}
 
 dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);background:var(--card);color:var(--ink);max-height:90vh}
@@ -1165,7 +1165,7 @@ const INSP=[
   {g:'Ходовая часть',i:[['tracks','Гусеницы: натяжение, траки, пальцы'],['final','Бортовые редукторы: нет течей'],['brake','Стояночный тормоз, управление ходом'],['jacks','Домкраты (выносные опоры)']]},
   {g:'Буровое оборудование',i:[['mast','Мачта: фиксаторы, крепления, нет трещин'],['feed','Цепь или канат подачи: натяжение, износ'],['rot','Вращатель: течи, крепление, люфт'],['rods','Штанги: резьба, износ'],['dth','Пневмоударник и коронка: износ'],['wrench','Ключ разворота и захваты штанг'],['dust','Пылеулавливание: рукава, фильтры, очистка']]},
   {g:'Безопасность и кабина',i:[['estop','Аварийный стоп проверен в работе'],['signal','Звуковой сигнал и сигнал заднего хода'],['lights','Фары и освещение'],['ext','Огнетушитель на месте, опломбирован'],['aid','Аптечка'],['guards','Ограждения вращающихся частей'],['steps','Поручни, ступени, площадки'],['cab','Стёкла, зеркала, панель без ошибок']]},
-  {g:'Смазка',i:[['grease','Точки смазки по карте смазки']]}
+  {g:'Смазка',i:[['autolube','Централизованная смазка: включена, смазки в баке достаточно, нет сигнала ERO'],['grease','Тавотницы мачты и стрелы прошприцованы']]}
 ];
 const INSP_ALL=INSP.flatMap(g=>g.i.map(([id,l])=>({id,l,g:g.g})));
 const CRIT=new Set(['estop','ext','mast','feed','brake','guards','signal','jacks']);
@@ -1251,7 +1251,7 @@ function renderShift(){
     <div class="progress"><div style="width:${(checked/INSP_ALL.length*100).toFixed(0)}%"></div></div>
     <p class="hint" style="margin:0 0 6px">Проверено ${checked} из ${INSP_ALL.length}${bad.length?`, неисправностей ${bad.length}`:''}.</p>
     ${crit.length?`<div class="crit">Критическая неисправность: ${esc(crit.map(x=>x.l).join('; '))}. Работа станка запрещена до устранения — сообщи механику и мастеру.</div>`:''}
-    ${INSP.map(g=>`<div class="igroup cond">${g.g}</div>`+g.i.map(([id,l])=>{const v=sh.insp[id]||{};return `<div class="irow"><span>${esc(l)}${CRIT.has(id)?' <span class="tag">важно</span>':''}</span><div class="seg"><button type="button" data-insp="${id}" data-v="ok" aria-pressed="${v.s==='ok'}">Норма</button><button type="button" data-insp="${id}" data-v="bad" aria-pressed="${v.s==='bad'}">Неиспр.</button></div>
+    ${INSP.map(g=>`<div class="igroup cond">${g.g}${g.g==='Смазка'?' <button class="btn" type="button" data-golube="1" style="min-height:36px;font:500 14px Roboto,system-ui,sans-serif;margin-left:8px">Карта смазки</button>':''}</div>`+g.i.map(([id,l])=>{const v=sh.insp[id]||{};return `<div class="irow"><span>${esc(l)}${CRIT.has(id)?' <span class="tag">важно</span>':''}</span><div class="seg"><button type="button" data-insp="${id}" data-v="ok" aria-pressed="${v.s==='ok'}">Норма</button><button type="button" data-insp="${id}" data-v="bad" aria-pressed="${v.s==='bad'}">Неиспр.</button></div>
       ${v.s==='bad'?`<div class="inote"><input type="text" data-inote="${id}" value="${esc(v.n||'')}" placeholder="Что именно не так" aria-label="Описание неисправности"><button class="btn" type="button" data-tobrk="${id}">В поломки</button></div>`:''}</div>`;}).join('')).join('')}
     <div style="margin-top:12px">${sh.inspAt?`<div class="okmsg">Осмотр подписал ${esc(sh.inspBy)}, ${tm(sh.inspAt)}.</div>`:`<button class="btn main big" id="inspSign" type="button"${checked<INSP_ALL.length?' disabled':''}>${checked<INSP_ALL.length?`Отметь все пункты (осталось ${INSP_ALL.length-checked})`:'Подписать осмотр'}</button>`}</div></div>`+
 
@@ -1277,6 +1277,7 @@ $('#shiftBody').addEventListener('change',ev=>{const el=ev.target;if(el.tagName=
 $('#shiftBody').addEventListener('click',ev=>{const t=ev.target.closest('button');if(!t)return;const sh=curShift();
   if(t.dataset.openshift){S.activeShiftId=t.dataset.openshift;save();renderShift();window.scrollTo(0,0);return;}
   if(t.dataset.goto){setTab(t.dataset.goto);return;}
+  if(t.dataset.golube){spView='lube';spQuery='';setTab('sprav');return;}
   if(t.dataset.fix){const [sid,bid]=t.dataset.fix.split('|');const o=S.shiftsData[sid];const b=o&&(o.brk||[]).find(x=>x.id===bid);
     if(b){b.st='fixed';b.fixedAt=new Date().toISOString();b.fixedBy=S.operator||'';save();dirtyShift(sid);renderShift();toast('Поломка отмечена устранённой');}return;}
   if(!sh)return;
@@ -1431,7 +1432,7 @@ function snippet(text,terms,len){const low=ruNorm(text);let best=0,bs=-1;
   const a=Math.max(0,best-40),b=Math.min(text.length,a+len);return(a>0?'…':'')+text.slice(a,b).replace(/\s+/g,' ')+(b<text.length?'…':'');}
 function hl(text,terms){let h=esc(text);terms.forEach(t=>{if(t.length<2)return;const re=new RegExp('(^|[^0-9a-zа-яё])('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[0-9a-zа-яё]*)','gi');h=h.replace(re,'$1<mark>$2</mark>');});return h;}
 const docShort=id=>{const d=SP_DATA.docs.find(x=>x.id===id);return d?d.short:id;};
-const pageLabel=p=>p.d==='m'?(p.n?`стр. ${p.n}`:`лист ${p.i}`):`${docShort(p.d)}${SP_DATA.docs.find(x=>x.id===p.d).pages>1?', лист '+p.i:''}`;
+const pageLabel=p=>p.d==='m'?(p.n?`стр. ${p.n}`:`лист ${p.i}`):p.d==='c'?`стр. ${p.n}`:`${docShort(p.d)}${SP_DATA.docs.find(x=>x.id===p.d).pages>1?', лист '+p.i:''}`;
 async function spLoad(){if(SP_DATA)return SP_DATA;try{const d=await SPR.get('kv','pkg');if(d){SP_DATA=d;buildIndex();}}catch(e){}return SP_DATA;}
 async function renderSprav(){const box=$('#spravBody');await spLoad();
   if(!SP_DATA){box.innerHTML=`<div class="card"><h2>Справочник по JK830-2</h2>
@@ -1443,7 +1444,7 @@ async function renderSprav(){const box=$('#spravBody');await spLoad();
   const v=spView;
   box.innerHTML=`<div class="card" style="padding:10px">
     <div class="row" style="flex-wrap:nowrap"><input id="spQ" type="search" placeholder="Что найти: натяжение гусеницы, масло компрессора…" value="${esc(spQuery)}" style="flex:1" aria-label="Поиск по инструкции"><button class="btn main" id="spGo" type="button">Найти</button></div>
-    <div class="chips" style="margin:10px 0 0">${[['home','Разделы'],['to','Плановое ТО'],['schemes','Схемы'],['reg','Регламент компании']].map(([k,l])=>`<button type="button" data-spv="${k}" aria-pressed="${v===k}">${l}</button>`).join('')}</div></div>
+    <div class="chips" style="margin:10px 0 0">${[['home','Разделы'],['to','Плановое ТО'],['lube','Карта смазки'],['schemes','Схемы'],['reg','Регламент компании']].map(([k,l])=>`<button type="button" data-spv="${k}" aria-pressed="${v===k}">${l}</button>`).join('')}</div></div>
     <div id="spOut"></div>
     <div class="card"><p class="hint" style="margin:0 0 8px">В справочнике: ${esc(SP_DATA.docs.map(d=>d.short).join(', '))}. Составлен ${esc(String(SP_DATA.made||'').split('-').reverse().join('.'))}. Это текст документов производителя без изменений; при сомнениях сверяйся с бумажной инструкцией и механиком.</p>
     <label class="btn" style="display:inline-flex;align-items:center;cursor:pointer">Заменить файл справочника<input type="file" id="spFile" accept=".json,application/json" hidden></label> <span class="hint" id="spMsg"></span></div>`;
@@ -1453,6 +1454,7 @@ async function renderSprav(){const box=$('#spravBody');await spLoad();
   box.querySelectorAll('[data-spv]').forEach(b=>b.onclick=()=>{spView=b.dataset.spv;spQuery='';$('#spQ').value='';renderSprav();});
   renderSpOut();}
 function renderSpOut(){const out=$('#spOut');if(!out)return;const D=SP_DATA;
+  if(spView==='lube'){renderLube(out);return;}
   if(spView==='search'){const r=spSearch(spQuery);
     out.innerHTML=(r.secs.length?`<div class="card"><h2>Разделы</h2>${r.secs.map(e=>`<button class="splink" type="button" data-spp="m:${e.i}" data-spq="1"><b>${esc(e.num)}</b> ${hl(e.title,r.terms)} <span class="muted">стр. ${e.pg}</span></button>`).join('')}</div>`:'')+
       (r.pages.length?`<div class="card"><h2>Найдено на страницах${r.partial?' (не все слова)':''}</h2>${r.pages.map(x=>`<button class="sphit" type="button" data-spp="${x.p.d}:${x.p.i}" data-spq="1"><div class="sub"><b>${esc(pageLabel(x.p))}</b>${x.p.c?' · '+esc(x.p.c):''}${x.p.d!=='m'?' · '+esc(docShort(x.p.d)):''}</div><div>${hl(snippet(x.p.t,r.terms,220),r.terms)}</div></button>`).join('')}</div>`
@@ -1495,6 +1497,55 @@ async function spImport(ev){const f=ev.target.files&&ev.target.files[0];ev.targe
     toast('Справочник загружен и работает без интернета');renderSprav();}
   catch(e){msg.textContent='Не удалось загрузить: '+(e&&e.message?e.message:'файл повреждён или не хватает памяти');}
   finally{spBusy=false;}}
+
+/* ---------- карта смазки ---------- */
+const MYPH=(()=>{let op=null;
+  const open=()=>op||(op=new Promise((res,rej)=>{const r=indexedDB.open('jk830-myphotos',1);r.onupgradeneeded=()=>r.result.createObjectStore('p');r.onsuccess=()=>res(r.result);r.onerror=()=>{op=null;rej(r.error);};}));
+  const run=(mode,fn)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction('p',mode);const q=fn(t.objectStore('p'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);}));
+  return{put:(k,v)=>run('readwrite',s=>s.put(v,k)),get:k=>run('readonly',s=>s.get(k)),del:k=>run('readwrite',s=>s.delete(k))};})();
+if(!S.lube||typeof S.lube!=='object')S.lube={marks:{},photos:[]};
+const lubeRefs=refs=>(refs||[]).map(r=>{const p=SP_DATA&&SP_DATA.pages.find(x=>x.d===r.d&&(r.n!=null&&r.d==='m'?x.n===r.n:x.i===r.i));
+  const label=r.d==='m'?`стр. ${r.n}`:`каталог, стр. ${p?p.n:r.i}`;
+  return p?`<button class="btn" type="button" data-spp="${p.d}:${p.i}" style="min-height:36px;padding:4px 10px;font-size:14px">${label}</button>`:`<span class="tag">${label}</span>`;}).join(' ');
+const MARKS=[['auto','Авто'],['gun','Шприц'],['','Не проверено']];
+function renderLube(out){const L=SP_DATA&&SP_DATA.lube;
+  if(!L){out.innerHTML='<div class="card muted">Карты смазки нет в загруженном справочнике. Загрузи новый файл справочника (версия от 22.10.2026 или новее).</div>';return;}
+  const block=it=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${esc(it.h)}</b><div>${esc(it.t)}</div><div class="row" style="margin-top:6px">${lubeRefs(it.ref)}</div></div>`;
+  const tot=L.nipples.reduce((m,n)=>m+n.q,0);
+  out.innerHTML=`<div class="card"><h2>Централизованная смазка (из кабины)</h2>${L.auto.map(block).join('')}
+    <h3 style="font-size:18px;margin:12px 0 4px">Смазка в бак насоса по температуре воздуха</h3>
+    <div class="tbl"><table style="min-width:0"><tbody>${L.grease.map(g=>`<tr><td>${esc(g[0])}</td><td><b>${esc(g[1])}</b></td></tr>`).join('')}</tbody></table></div></div>
+  <div class="card"><h2>Ручная смазка шприцем</h2><p class="hint" style="margin:0 0 4px">По инструкции производителя. Пистолет-шприц установлен на машине.</p>${L.manual.map(block).join('')}</div>
+  <div class="card"><h2>Масленки по каталогу запчастей</h2>
+    <p class="hint" style="margin:0 0 6px">В каталоге ${tot} масленок M10×1 (GB1152-89) на узлах ниже. В каталоге не указано, какие из них подключены к централизованной смазке. Проверь на своей машине и отметь — отметки сохраняются на этом телефоне.</p>
+    ${L.nipples.map(n=>{const m=S.lube.marks[n.id]||'';return `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><b>${esc(n.a)}</b><span class="cond" style="font-size:22px;font-weight:700">${n.q} шт.</span></div>
+      <div class="muted" style="font-size:14px">${esc(n.pos)}${n.w?' · '+esc(n.w):''}</div>
+      <div class="chips" style="margin:6px 0">${MARKS.map(([k,l])=>`<button type="button" data-lmark="${n.id}|${k}" aria-pressed="${m===k}">${l}</button>`).join('')}</div>
+      <div class="row">${lubeRefs(n.ref)}</div></div>`;}).join('')}</div>
+  <div class="card"><h2>Смазочные материалы</h2>${L.oils.map(block).join('')}</div>
+  <div class="card"><h2>Свои фото точек смазки</h2><p class="hint" style="margin:0 0 8px">Сфотографируй табличку-схему смазки на машине или сами тавотницы на мачте и подпиши. Фото хранятся на этом телефоне.</p>
+    <div id="lubePh" class="row" style="align-items:flex-start"></div>
+    <label class="btn main" style="display:inline-flex;align-items:center;cursor:pointer;margin-top:8px">Добавить фото<input type="file" id="lubeAdd" accept="image/*" capture="environment" hidden></label></div>`;
+  $('#lubeAdd').onchange=lubeAddPhoto;renderLubePhotos();}
+async function renderLubePhotos(){const box=$('#lubePh');if(!box)return;
+  if(!S.lube.photos.length){box.innerHTML='<span class="muted">Фото пока нет.</span>';return;}
+  box.innerHTML=S.lube.photos.map(p=>`<figure style="margin:0;width:calc(50% - 4px)"><button type="button" class="splink" data-lph="${esc(p.id)}" style="padding:0;border:0"><img alt="${esc(p.cap||'Фото точки смазки')}" data-lphimg="${esc(p.id)}" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;background:var(--line)"></button><figcaption style="font-size:14px">${esc(p.cap||'')}</figcaption></figure>`).join('');
+  for(const p of S.lube.photos){try{const b=await MYPH.get(p.id);const im=document.querySelector(`[data-lphimg="${p.id}"]`);if(b&&im)im.src=URL.createObjectURL(b);}catch(e){}}}
+async function lubeAddPhoto(ev){const f=ev.target.files&&ev.target.files[0];ev.target.value='';if(!f)return;
+  try{const url=URL.createObjectURL(f);const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url;});
+    const k=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*k);c.height=Math.round(img.naturalHeight*k);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.82));
+    const cap=(prompt('Подпись к фото (например: «Тавотницы каретки, верх мачты»)','')||'').trim();
+    const id='lp-'+rid();await MYPH.put(id,blob);S.lube.photos.push({id,cap,at:new Date().toISOString()});save();renderLubePhotos();toast('Фото добавлено');}
+  catch(e){toast('Не удалось сохранить фото');}}
+document.addEventListener('click',async ev=>{const m=ev.target.closest('[data-lmark]');
+  if(m){const [id,k]=m.dataset.lmark.split('|');if(k)S.lube.marks[id]=k;else delete S.lube.marks[id];save();m.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===m));return;}
+  const ph=ev.target.closest('[data-lph]');if(!ph)return;const p=S.lube.photos.find(x=>x.id===ph.dataset.lph);if(!p)return;
+  const b=await MYPH.get(p.id).catch(()=>null);if(!b)return;
+  $('#spTitle').textContent='Фото: точки смазки';$('#spSub').textContent=p.cap||'';$('#spText').innerHTML=`<button class="btn danger" type="button" id="lphDel">Удалить это фото</button>`;
+  if(spUrl)URL.revokeObjectURL(spUrl);spUrl=URL.createObjectURL(b);$('#spImg').src=spUrl;$('#spPrev').disabled=true;$('#spNext').disabled=true;spZoom=1;setSpMode('img');$('#spText').hidden=false;
+  if(!$('#dlgSp').open)$('#dlgSp').showModal();
+  $('#lphDel').onclick=async()=>{await MYPH.del(p.id).catch(()=>{});S.lube.photos=S.lube.photos.filter(x=>x.id!==p.id);save();$('#dlgSp').close();renderLubePhotos();toast('Фото удалено');};});
 
 /* ---------- вкладки ---------- */
 function setTab(t){S.tab=t;save();$$('section.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));$$('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
