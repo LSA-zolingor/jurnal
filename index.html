@@ -193,6 +193,38 @@ mark{background:var(--visSoft);color:inherit;padding:0 1px;border-radius:2px}
 .sptext{font-size:16px;line-height:1.55;white-space:normal}
 #spImgBox{overflow:auto;background:#fff;border-radius:8px}
 #spImg{display:block;width:100%;height:auto}
+#micFab{position:fixed;right:14px;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:35;width:68px;height:68px;border-radius:50%;border:0;background:var(--vis);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+#micFab svg,.micbig svg{width:34px;height:34px}
+.micbig{width:132px;height:132px;border-radius:50%;border:0;background:var(--vis);color:#fff;display:flex;align-items:center;justify-content:center;margin:6px auto 0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.micbig svg{width:60px;height:60px}
+.micbig.on,#txtMic.on,#iwMic.on{background:var(--danger);color:#fff;border-color:var(--danger);animation:pulse 1.2s ease-in-out infinite}
+.heard{min-height:52px;text-align:center;font-size:19px;padding:8px 4px}
+.reply{text-align:center;font-weight:600;font-size:18px;padding:4px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border:1.5px solid var(--line);background:var(--card);border-radius:12px;min-height:84px;padding:10px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;cursor:pointer}
+.tile b{font:700 21px/1.1 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.tile span{font-size:15px;color:var(--muted);margin-top:4px}
+.plan{border:3px solid var(--vis);border-radius:12px;padding:14px;background:var(--visSoft);margin:10px 0}
+.plan p{margin:0 0 12px;font:700 22px/1.25 "Roboto Condensed","sans-serif-condensed","Arial Narrow",sans-serif}
+.yesno{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yesno .btn{min-height:68px;font:700 24px "Roboto Condensed","sans-serif-condensed",sans-serif}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.numpad button{min-height:66px;font:700 30px "Roboto Condensed","sans-serif-condensed",sans-serif;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.padval{font:700 46px/1 "Roboto Condensed","sans-serif-condensed",sans-serif;text-align:center;border:2px solid var(--line);border-radius:10px;padding:10px;min-height:70px;background:var(--paper)}
+.iwitem{font:700 30px/1.2 "Roboto Condensed","sans-serif-condensed",sans-serif;text-align:center;padding:18px 6px;min-height:150px;display:flex;align-items:center;justify-content:center}
+.iwbtns{display:grid;gap:10px}
+.iwbtns .btn{min-height:80px;font:700 28px "Roboto Condensed","sans-serif-condensed",sans-serif}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.bad{background:var(--danger);border-color:var(--danger);color:#fff}
+body.big{font-size:20px}
+body.big .btn{min-height:56px;font-size:19px}
+body.big input,body.big select,body.big textarea{min-height:56px;font-size:21px}
+body.big .seg button{min-height:56px;padding:0 16px;font-size:18px}
+body.big .chips button{min-height:52px;font-size:18px;padding:6px 16px}
+body.big .irow{font-size:19px}
+body.big .hint{font-size:17px}
+body.big nav.tabs button{min-height:70px;font-size:15px}
+body.big .card h2{font-size:24px}
 #toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--bar);color:var(--barInk);padding:10px 16px;border-radius:8px;font-size:15px;max-width:92vw;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.on{opacity:1}
 
@@ -432,6 +464,55 @@ mark{background:var(--visSoft);color:inherit;padding:0 1px;border-radius:2px}
   </div>
   <div class="drawbody" id="spScroll"><div id="spText"></div><div id="spImgBox" hidden><img id="spImg" alt="Страница инструкции"></div></div>
   <div class="drawfoot"><button class="btn" id="spPrev" type="button">← Пред.</button><button class="btn" id="spNext" type="button">След. →</button></div>
+</div></dialog>
+
+<button id="micFab" type="button" aria-label="Голосом и быстрые кнопки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+
+<dialog id="dlgVoice" class="full"><div class="drawwrap">
+  <div class="drawhead"><h3>Голосом</h3><button class="btn" id="vClose" type="button">Закрыть</button></div>
+  <div class="drawbody">
+    <button class="micbig" id="vMicBtn" type="button" aria-label="Говорить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <div class="heard" id="vHeard"></div>
+    <div class="reply" id="vReply"></div>
+    <div class="row" style="flex-wrap:nowrap;margin-top:6px"><input id="vText" type="text" placeholder="Или скажи через микрофон клавиатуры" aria-label="Фраза" style="flex:1"><button class="btn main" id="vGo" type="button">ОК</button></div>
+    <div class="plan" id="vPlan" hidden><p id="vPlanText"></p><div class="yesno"><button class="btn ok" id="vYes" type="button">ДА, записать</button><button class="btn" id="vNo" type="button">НЕТ</button></div></div>
+    <h3 class="cond" style="font-size:20px;margin:16px 0 8px">Или нажми</h3>
+    <div class="tiles" id="vTiles"></div>
+    <details class="read" style="margin-top:14px"><summary>Что можно сказать</summary><ul style="margin:0;padding-left:20px;line-height:1.6">
+      <li>«Начать смену»</li><li>«Скважина двенадцать, одиннадцать метров» или «Следующая, одиннадцать с половиной, обводнена»</li>
+      <li>«Простой сорок минут, ждали экскаватор»</li><li>«Заправил четыреста литров»</li><li>«Моточасы тысяча пятьсот двадцать»</li>
+      <li>«Поломка: течёт рукав на вращателе»</li><li>«Осмотр» — приложение зачитывает пункты, отвечай «норма» или «неисправно»</li>
+      <li>«Как натянуть гусеницу», «Найди масло компрессора» — ответ из инструкции вслух</li></ul></details>
+    <div class="card" style="margin-top:12px"><label class="chk"><input type="checkbox" id="vBig"> Крупный шрифт и кнопки во всём приложении</label>
+      <label class="chk"><input type="checkbox" id="vSpeak"> Озвучивать ответы</label></div>
+  </div>
+</div></dialog>
+
+<dialog id="dlgPad"><div class="dbody">
+  <h3 id="padTitle"></h3>
+  <div class="padval" id="padVal"></div>
+  <div class="chips" id="padChips" style="margin:0"></div>
+  <div class="numpad" id="padKeys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k=",">,</button><button type="button" data-k="0">0</button><button type="button" data-k="del" aria-label="Стереть">⌫</button></div>
+  <div class="yesno"><button class="btn" id="padCancel" type="button">Отмена</button><button class="btn main" id="padOk" type="button">ГОТОВО</button></div>
+</div></dialog>
+
+<dialog id="dlgTxt"><div class="dbody">
+  <h3 id="txtTitle"></h3>
+  <div class="row" style="flex-wrap:nowrap"><input id="txtIn" type="text" style="flex:1" aria-label="Текст"><button class="btn main" id="txtMic" type="button" aria-label="Сказать" style="min-width:60px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button></div>
+  <p class="hint" style="margin:0">Можно сказать через микрофон на клавиатуре — он работает и без интернета.</p>
+  <div class="yesno"><button class="btn" id="txtCancel" type="button">Отмена</button><button class="btn main" id="txtOk" type="button">ГОТОВО</button></div>
+</div></dialog>
+
+<dialog id="dlgInsp" class="full"><div class="drawwrap">
+  <div class="drawhead"><h3>Осмотр голосом</h3><button class="btn" id="iwClose" type="button">Закрыть</button></div>
+  <div class="drawbody">
+    <div class="muted" style="text-align:center;font-size:17px" id="iwGroup"></div>
+    <div class="iwitem" id="iwItem"></div>
+    <div class="muted" style="text-align:center;margin-bottom:10px" id="iwCount"></div>
+    <div class="iwbtns" id="iwBtns"><button class="btn ok" id="iwOk" type="button">НОРМА</button><button class="btn bad" id="iwBad" type="button">НЕИСПРАВНО</button>
+      <div class="yesno"><button class="btn" id="iwSkip" type="button" style="min-height:58px;font-size:20px">Пропустить</button><button class="btn" id="iwMic" type="button" style="min-height:58px;font-size:20px">Ответить голосом</button></div></div>
+    <div class="iwbtns" id="iwEnd" hidden><button class="btn main" id="iwSign" type="button">ПОДПИСАТЬ ОСМОТР</button></div>
+  </div>
 </div></dialog>
 
 <div id="toast" role="status" aria-live="polite"></div>
@@ -1546,6 +1627,217 @@ document.addEventListener('click',async ev=>{const m=ev.target.closest('[data-lm
   if(spUrl)URL.revokeObjectURL(spUrl);spUrl=URL.createObjectURL(b);$('#spImg').src=spUrl;$('#spPrev').disabled=true;$('#spNext').disabled=true;spZoom=1;setSpMode('img');$('#spText').hidden=false;
   if(!$('#dlgSp').open)$('#dlgSp').showModal();
   $('#lphDel').onclick=async()=>{await MYPH.del(p.id).catch(()=>{});S.lube.photos=S.lube.photos.filter(x=>x.id!==p.id);save();$('#dlgSp').close();renderLubePhotos();toast('Фото удалено');};});
+
+/* ---------- голосовое управление и крупный режим ---------- */
+if(!S.ui||typeof S.ui!=='object')S.ui={big:false,speak:true};
+document.body.classList.toggle('big',!!S.ui.big);
+/* озвучка */
+let ruVoice=null;
+function pickVoice(){try{const v=speechSynthesis.getVoices();ruVoice=v.find(x=>/^ru/i.test(x.lang)&&x.localService)||v.find(x=>/^ru/i.test(x.lang))||null;}catch(e){}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t){if(!S.ui.speak||!('speechSynthesis' in window)||!t)return Promise.resolve();
+  return new Promise(res=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';if(ruVoice)u.voice=ruVoice;u.rate=0.95;
+    u.onend=res;u.onerror=res;speechSynthesis.speak(u);setTimeout(res,Math.min(15000,600+t.length*90));}catch(e){res();}});}
+/* распознавание */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let recog=null,listening=false;
+function listen(onPartial){return new Promise((res,rej)=>{
+  if(!SR){rej({code:'nosupport'});return;}
+  if(!navigator.onLine){rej({code:'offline'});return;}
+  try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
+  const r=new SR();recog=r;r.lang='ru-RU';r.interimResults=true;r.maxAlternatives=1;r.continuous=false;let fin='',got=false;
+  r.onresult=ev=>{let s='';for(let i=0;i<ev.results.length;i++){s+=ev.results[i][0].transcript;if(ev.results[i].isFinal)fin=s;}if(onPartial)onPartial(s);got=true;if(!fin)fin=s;};
+  r.onerror=ev=>{listening=false;rej({code:ev.error||'error'});};
+  r.onend=()=>{listening=false;recog=null;got?res(fin.trim()):rej({code:'no-speech'});};
+  listening=true;try{r.start();}catch(e){listening=false;rej({code:'start'});}});}
+function stopListen(){try{recog&&recog.stop();}catch(e){}}
+const KBD_TIP='Без интернета распознавание внутри приложения не работает. Нажми на поле ниже и скажи фразу через микрофон на клавиатуре — он работает без связи, если в клавиатуре Gboard скачан русский язык для офлайн-ввода.';
+
+/* числа словами → цифры */
+const NUMW={ноль:0,нуль:0,один:1,одна:1,одну:1,одно:1,два:2,две:2,три:3,четыре:4,пять:5,шесть:6,семь:7,восемь:8,девять:9,десять:10,одиннадцать:11,двенадцать:12,тринадцать:13,четырнадцать:14,пятнадцать:15,шестнадцать:16,семнадцать:17,восемнадцать:18,девятнадцать:19,
+  двадцать:20,тридцать:30,сорок:40,пятьдесят:50,шестьдесят:60,семьдесят:70,восемьдесят:80,девяносто:90,сто:100,двести:200,триста:300,четыреста:400,пятьсот:500,шестьсот:600,семьсот:700,восемьсот:800,девятьсот:900,полтора:1.5,полторы:1.5};
+const ORDW=[['тысячн',1000],['девятисот',900],['восьмисот',800],['семисот',700],['шестисот',600],['пятисот',500],['четырехсот',400],['трехсот',300],['двухсот',200],['сот',100],['девяност',90],['восьмидесят',80],['семидесят',70],['шестидесят',60],['пятидесят',50],['сороков',40],['тридцат',30],['двадцат',20],
+  ['девятнадцат',19],['восемнадцат',18],['семнадцат',17],['шестнадцат',16],['пятнадцат',15],['четырнадцат',14],['тринадцат',13],['двенадцат',12],['одиннадцат',11],['десят',10],['девят',9],['восьм',8],['седьм',7],['шест',6],['пят',5],['четверт',4],['трет',3],['втор',2],['перв',1]];
+function wordNum(w){if(w in NUMW)return{v:NUMW[w],ord:false};if(/^тысяч/.test(w)&&!/^тысячн/.test(w))return{v:1000,mul:true};
+  if(/(ый|ой|ий|ая|ую|ое|ого|ом|ые|ья|ью|ье|ьего|ей|ая)$/.test(w)){for(const [s,v] of ORDW)if(w.startsWith(s))return{v,ord:true};}return null;}
+function wordsToDigits(text){const toks=ruNorm(text).replace(/(\d),(\d)/g,'$1.$2').split(/\s+/).filter(Boolean),out=[];let acc=null,ord=false;
+  const flush=()=>{if(acc!=null){out.push(String(Math.round(acc*1000)/1000)+(ord?'#':''));acc=null;ord=false;}};
+  for(let i=0;i<toks.length;i++){const w=toks[i].replace(/[.,!?;:]+$/,'');
+    if(w==='с'&&toks[i+1]&&/^половин/.test(toks[i+1])&&(acc!=null||/^\d/.test(out[out.length-1]||''))){if(acc!=null)acc+=0.5;else out[out.length-1]=String(num(out[out.length-1])+0.5);i++;continue;}
+    const n=wordNum(w);
+    if(n){if(n.mul){acc=(acc||1)*1000;continue;}
+      if(acc!=null&&!ord&&((acc%1000===0&&n.v<1000)||(acc%100===0&&n.v<100)||(acc%10===0&&acc>=20&&n.v<10)))acc+=n.v;else{flush();acc=n.v;}
+      if(n.ord)ord=true;continue;}
+    flush();out.push(w);}
+  flush();return out.join(' ');}
+
+/* разбор фразы */
+const FLAGW=[[/обводн|вода|мокр|сыр/,'Обводнена'],[/пустот|провал/,'Пустота'],[/заклин|зажал|прихват/,'Заклинивание'],[/недобур|не добур/,'Недобур'],[/перебур/,'Перебурена']];
+const DOWNW=[[/ремонт|слом|поломк/,'Ремонт'],[/\bто\b|обслуж|заправ/,'ТО, заправка'],[/ждал|ожид|техник|самосвал|экскаватор/,'Ожидание техники'],[/перегон|переезд|перегоня/,'Перегон'],[/погод|дожд|снег|мороз|ветер|туман|гроз/,'Погода'],[/фронт|нет работ|нет блок/,'Нет фронта работ']];
+const NODEW=[[/двигател|мотор|дизел|форсун|турбин/,'Двигатель'],[/компрессор|сепаратор/,'Компрессор'],[/гидрав|рвд|шланг|рукав|насос|цилиндр|течь масла/,'Гидравлика'],[/гусениц|ходов|трак|каток|звездочк.*ход/,'Ходовая часть'],[/мачт|вращател|штанг|ударник|коронк|цеп|каретк|манипулятор|податчик|ключ/,'Буровое оборудование'],[/электр|провод|фар|свет|датчик|аккумулятор|генератор|стартер/,'Электрика'],[/смазк|тавот/,'Смазка'],[/кабин|стекл|дверь|огнетушит|кондиционер/,'Безопасность и кабина']];
+const numsOf=s=>(s.match(/\d+(?:\.\d+)?#?/g)||[]);
+function parseVoice(raw){const t0=ruNorm(raw).trim();if(!t0)return null;const t=wordsToDigits(t0);const nums=numsOf(t);const val=x=>num(String(x).replace('#',''));
+  if(/(начать|начни|начинаю|открыть|открой|начинаем)\s.*смен/.test(t)||/^смен[ау]\s+(начат|открыт)/.test(t))return{kind:'shift',text:'Начать смену'};
+  if(/осмотр/.test(t)&&!/(найди|как|где|сколько)/.test(t))return{kind:'insp',text:'Ежесменный осмотр голосом'};
+  if(/^(найди|найти|покажи|как |где |сколько|что такое|справк|инструкц|подскажи)/.test(t)){const q=t.replace(/^(найди|найти|покажи|подскажи|справка|справку|инструкция|в инструкции)\s*/,'').replace(/^(как|где|сколько|что такое)\s*/,'');return{kind:'sprav',q:q||t,text:'Справка: '+(q||t)};}
+  if(/моточас|счетчик|счётчик/.test(t)&&nums.length){const h=val(nums[nums.length-1]);const sh=curShift();const which=sh&&sh.engS&&!sh.engE?'engE':(sh&&!sh.engS?'engS':(/конец|конц|в конце/.test(t)?'engE':/начал/.test(t)?'engS':'engE'));
+    return{kind:'eng',h,which,text:`Моточасы ${which==='engS'?'на начало':'на конец'} смены: ${fmt(h,1)}`};}
+  if(/заправ|залил|долил|литр/.test(t)&&nums.length&&!/(масл|смазк)/.test(t)){const l=val(nums[0]);return{kind:'fuel',l,text:`Заправка ДТ: ${fmt(l,0)} л`};}
+  if(/просто|стоял|стояли|простаива/.test(t)){let min=null;const m=t.match(/(\d+(?:\.\d+)?)\s*(час|ч\b)/),mm=t.match(/(\d+(?:\.\d+)?)\s*(мин|м\b)/);
+    if(m)min=val(m[1])*60+(mm&&mm.index>m.index?val(mm[1]):0);else if(mm)min=val(mm[1]);else if(nums.length)min=val(nums[0]);
+    let reason='Другое';for(const [re,r] of DOWNW)if(re.test(t)){reason=r;break;}
+    return{kind:'down',min:min==null?null:Math.round(min),reason,note:raw.trim(),text:`Простой: ${min==null?'? ':Math.round(min)+' мин'}, ${reason}`};}
+  if(/поломк|слома|сломал|неисправ|течет|течёт|потек|лопнул|порвал|не работает|отказал|треснул|оборвал/.test(t)){let node='Другое';for(const [re,n] of NODEW)if(re.test(t)){node=n;break;}
+    const desc=raw.replace(/^\s*(поломка|неисправность)[:,]?\s*/i,'').trim();return{kind:'brk',node,desc,text:`Поломка (${node}): ${desc}`};}
+  if(/скважин|пробур|глубин|метр|следующ/.test(t)||nums.length){let n=null,d=null;
+    const ordn=nums.find(x=>x.endsWith('#'));let m;if(ordn)n=val(ordn);
+    else{m=t.match(/(?:скважин[а-я]*|номер|№)\s*(\d+)(?!\.?\d*\s*(?:метр|м\b))/);if(m)n=+m[1];}
+    m=t.match(/(?:глубин[а-я]*)\s*(\d+(?:\.\d+)?)/)||t.match(/(\d+(?:\.\d+)?)\s*(?:метр|м\b)/);if(m)d=val(m[1]);
+    const rest=nums.map(x=>x.replace('#','')).filter(x=>!(n!=null&&+x===n)&&!(d!=null&&val(x)===d));
+    if(d==null&&rest.length)d=val(rest[rest.length-1]);
+    if(n==null&&d==null&&!/скважин|пробур/.test(t))return{kind:'unknown',text:raw};
+    const f=FLAGW.filter(([re])=>re.test(t)).map(([,l])=>l);
+    return{kind:'hole',n,d,f,text:''};}
+  return{kind:'unknown',text:raw};}
+
+/* выполнение */
+function nextHole(){const b=act(),G=computeBlock(b);if(G.error||!G.holes.length)return null;const recs=S.records[b.id]||{},oth=otherDrilled(b.id);
+  return{G,b,h:G.holes.find(h=>!recs[h.n]&&!oth.has(h.n))};}
+function describeHole(p){const x=nextHole();if(!x)return'В текущем блоке нет скважин — настрой блок';
+  const n=p.n!=null?p.n:(x.h?x.h.n:null),d=p.d!=null?p.d:x.G.len;p._n=n;p._d=d;
+  if(n==null)return'Все скважины блока уже отмечены';if(!x.G.holes.some(h=>h.n===n))return`В блоке нет скважины № ${n} (всего ${x.G.holes.length})`;
+  return`Скважина № ${n} — ${fmt(d,1)} м${p.f.length?', '+p.f.join(', ').toLowerCase():''}${p.d==null?' (проектная глубина)':''}`;}
+function needShift(){if(curShift())return false;vSay('Сначала начни смену. Скажи «начать смену» или нажми плитку «Начать смену».');return true;}
+function execPlan(p){const now=new Date().toISOString();
+  if(p.kind==='hole'){const x=nextHole();if(!x||p._n==null||!x.G.holes.some(h=>h.n===p._n))return false;
+    (S.records[x.b.id]=S.records[x.b.id]||{})[p._n]={d:p._d,f:p.f,note:'голосом',at:now,op:S.operator,rig:S.rig,sh:S.shift,sid:S.activeShiftId||''};
+    save();markDirty(x.b.id);if(S.activeShiftId)dirtyShift(S.activeShiftId);const nx=nextHole();
+    return`Записал скважину ${p._n}.`+(nx&&nx.h?` Следующая — ${nx.h.n}.`:' Блок обурен полностью.');}
+  if(p.kind==='down'){if(p.min==null||!(p.min>0))return false;const b=act();
+    (S.downtime[b.id]=S.downtime[b.id]||[]).push({at:now,min:p.min,reason:p.reason,note:p.note||'',op:S.operator,sh:S.shift,sid:S.activeShiftId||''});
+    save();markDirty(b.id);if(S.activeShiftId)dirtyShift(S.activeShiftId);return`Записал простой ${p.min} минут, ${p.reason}.`;}
+  if(p.kind==='fuel'){if(needShift())return'';const sh=curShift();sh.fuel=String(Math.round((num(sh.fuel,0)+p.l)*10)/10);save();dirtyShift(sh.id);return`Записал заправку ${fmt(p.l,0)} литров. Всего за смену ${fmt(num(sh.fuel),0)}.`;}
+  if(p.kind==='eng'){if(needShift())return'';const sh=curShift();sh[p.which]=String(p.h);save();dirtyShift(sh.id);return`Записал моточасы ${p.which==='engS'?'на начало':'на конец'} смены.`;}
+  if(p.kind==='brk'){if(needShift())return'';const sh=curShift();(sh.brk=sh.brk||[]).push({id:'k-'+rid(),at:now,node:p.node,desc:p.desc,act:'',min:0,st:'open',by:S.operator||'',fixedAt:'',fixedBy:''});
+    save();dirtyShift(sh.id);return'Записал поломку. Не забудь сообщить механику.';}
+  return false;}
+
+/* окно голоса */
+let vPlan=null;
+function vSay(t){$('#vReply').textContent=t;say(t);}
+function openVoice(){$('#vHeard').textContent='';$('#vReply').textContent=S.activeShiftId?'Нажми на микрофон и скажи, что сделал.':'Смена не начата. Скажи «начать смену» или нажми плитку.';
+  $('#vPlan').hidden=true;$('#vText').value='';$('#vBig').checked=!!S.ui.big;$('#vSpeak').checked=!!S.ui.speak;vRenderTiles();$('#dlgVoice').showModal();}
+function vRenderTiles(){const x=nextHole(),sh=curShift();
+  const T=[['hole','Скважина',x&&x.h?'№ '+x.h.n:'—'],['down','Простой',''],['fuel','Заправка ДТ',sh&&sh.fuel?fmt(num(sh.fuel),0)+' л':''],['eng','Моточасы',sh?(sh.engS?(sh.engE?'конец '+sh.engE:'нач. '+sh.engS):'начало'):''],
+    ['brk','Поломка',''],['insp','Осмотр голосом',sh?`${INSP_ALL.filter(i=>sh.insp[i.id]&&sh.insp[i.id].s).length}/${INSP_ALL.length}`:''],['sprav','Справка',''],[sh?'sync':'shift',sh?'Отправить':'Начать смену',sh?'':(S.operator||'')]];
+  $('#vTiles').innerHTML=T.map(([k,l,s])=>`<button class="tile" type="button" data-vt="${k}"><b>${esc(l)}</b><span>${esc(s)}</span></button>`).join('');}
+async function vMic(){if(listening){stopListen();return;}
+  const btn=$('#vMicBtn');btn.classList.add('on');$('#vHeard').textContent='Слушаю…';
+  try{const s=await listen(p=>{$('#vHeard').textContent=p;});btn.classList.remove('on');$('#vHeard').textContent=s;vHandle(s);}
+  catch(e){btn.classList.remove('on');
+    if(e.code==='no-speech'||e.code==='aborted'){$('#vHeard').textContent='Ничего не услышал. Нажми и скажи ещё раз.';return;}
+    if(e.code==='not-allowed'||e.code==='service-not-allowed'){$('#vHeard').textContent='Нет доступа к микрофону. Разреши микрофон для сайта в настройках Chrome.';return;}
+    $('#vHeard').textContent=KBD_TIP;$('#vText').focus();}}
+function vHandle(s){$('#vPlan').hidden=true;vPlan=null;const p=parseVoice(s);if(!p)return;
+  if(p.kind==='unknown'){vSay('Не понял. Скажи, например: «скважина двенадцать, одиннадцать метров», «простой тридцать минут ремонт», «заправил четыреста литров».');return;}
+  if(p.kind==='shift'){vQuickShift();return;}
+  if(p.kind==='insp'){$('#dlgVoice').close();inspWalk();return;}
+  if(p.kind==='sprav'){vSprav(p.q);return;}
+  if(['fuel','eng','brk'].includes(p.kind)&&needShift())return;
+  if(p.kind==='hole')p.text=describeHole(p);
+  if(p.kind==='down'&&p.min==null){padOpen({title:'Простой, минут',val:'',onOk:v=>{p.min=Math.round(v);p.text=`Простой: ${p.min} мин, ${p.reason}`;vConfirm(p);}});return;}
+  vConfirm(p);}
+function vConfirm(p){vPlan=p;$('#vPlan').hidden=false;$('#vPlanText').textContent=p.text;
+  const ok=p.kind!=='hole'||(p._n!=null&&/^Скважина/.test(p.text));$('#vYes').disabled=!ok;say(ok?p.text+'. Записать?':p.text);
+  $('#vPlan').scrollIntoView({block:'nearest'});}
+$('#vYes').onclick=()=>{if(!vPlan)return;const r=execPlan(vPlan);$('#vPlan').hidden=true;vPlan=null;
+  if(r===false){vSay('Не получилось записать — проверь данные.');return;}if(r){vSay(r);toast(r);}vRenderTiles();renderActiveTab();};
+$('#vNo').onclick=()=>{vPlan=null;$('#vPlan').hidden=true;vSay('Отменил.');};
+$('#vMicBtn').onclick=vMic;
+$('#vGo').onclick=()=>{const s=$('#vText').value.trim();if(s){$('#vHeard').textContent=s;vHandle(s);$('#vText').value='';}};
+$('#vText').addEventListener('keydown',e=>{if(e.key==='Enter')$('#vGo').click();});
+$('#vClose').onclick=()=>{stopListen();try{speechSynthesis.cancel();}catch(e){}$('#dlgVoice').close();};
+$('#vBig').onchange=e=>{S.ui.big=e.target.checked;save();document.body.classList.toggle('big',S.ui.big);};
+$('#vSpeak').onchange=e=>{S.ui.speak=e.target.checked;save();if(!S.ui.speak)try{speechSynthesis.cancel();}catch(er){}};
+$('#micFab').onclick=openVoice;
+function renderActiveTab(){const t=S.tab;if(t==='drill')renderDrill();if(t==='shift')renderShift();if(t==='block')renderResult();if(t==='shared')renderShared();}
+function vQuickShift(){if(curShift()){vSay('Смена уже начата.');return;}
+  if(!S.operator){padText({title:'Фамилия машиниста',onOk:v=>{S.operator=v;save();vQuickShift();}});return;}
+  const h=new Date().getHours(),shift=h>=7&&h<19?'День':'Ночь',date=localDate(),id='sh-'+date+'-'+rid();
+  S.shift=shift;S.shiftsData[id]={id,date,shift,rig:S.rig||'',operator:S.operator,started:new Date().toISOString(),closed:null,crew:[{name:S.operator,role:ROLES[0],hours:'11'}],
+    engS:'',engE:'',compS:'',compE:'',fuel:'',fuelBy:'',tankS:'',tankE:'',oil:'',insp:{},inspBy:'',inspAt:'',brk:[],notes:''};
+  S.activeShiftId=id;save();dirtyShift(id);renderWho();vRenderTiles();renderActiveTab();vSay(`Смена начата: ${shift.toLowerCase()}, ${S.operator}. Начни с осмотра — скажи «осмотр».`);}
+async function vSprav(q){if(!q){padText({title:'Что найти в инструкции',onOk:vSprav});return;}
+  await spLoad();if(!SP_DATA){vSay('Справочник не загружен. Загрузи его во вкладке «Справка».');return;}
+  const r=spSearch(q);const sec=r.secs[0];const pg=sec?SP_DATA.pages.find(p=>p.d==='m'&&p.i===sec.i):(r.pages[0]&&r.pages[0].p);
+  if(!pg){vSay('В инструкции ничего не нашёл по запросу: '+q);return;}
+  let txt=pg.t;if(sec){const k=txt.indexOf(sec.num+' '+sec.title.slice(0,10));if(k>=0)txt=txt.slice(k);}
+  const read=txt.split('\n').slice(0,9).join('. ').replace(/◆/g,'').replace(/\s+/g,' ').slice(0,600);
+  $('#dlgVoice').close();spOpenPage(pg.d,pg.i,r.terms);say((sec?sec.title+'. ':'')+read);}
+
+/* плитки */
+$('#vTiles').addEventListener('click',ev=>{const b=ev.target.closest('[data-vt]');if(!b)return;const k=b.dataset.vt,sh=curShift();
+  if(k==='hole'){const x=nextHole();if(!x||!x.h){vSay(x?'Все скважины блока уже отмечены.':'Настрой блок на вкладке «Блок».');return;}
+    padOpen({title:`Скважина № ${x.h.n}: глубина, м`,val:x.G.len,chips:FLAGW.map(f=>f[1]),onOk:(v,ch)=>{const p={kind:'hole',n:x.h.n,d:v,f:ch};p.text=describeHole(p);vConfirm(p);}});}
+  else if(k==='down')padOpen({title:'Простой, минут',val:'',chips:DOWNW.map(d=>d[1]).concat('Другое'),single:true,onOk:(v,ch)=>{const reason=ch[0]||'Другое';vConfirm({kind:'down',min:Math.round(v),reason,note:'',text:`Простой: ${Math.round(v)} мин, ${reason}`});}});
+  else if(k==='fuel'){if(needShift())return;padOpen({title:'Заправлено ДТ, литров',val:'',onOk:v=>vConfirm({kind:'fuel',l:v,text:`Заправка ДТ: ${fmt(v,0)} л`})});}
+  else if(k==='eng'){if(needShift())return;const which=sh.engS?'engE':'engS';padOpen({title:`Моточасы на ${which==='engS'?'начало':'конец'} смены`,val:'',onOk:v=>vConfirm({kind:'eng',h:v,which,text:`Моточасы ${which==='engS'?'на начало':'на конец'} смены: ${fmt(v,1)}`})});}
+  else if(k==='brk'){if(needShift())return;padOpen({title:'Поломка: какой узел?',noNum:true,chips:NODEW.map(n=>n[1]).concat('Другое'),single:true,onOk:(v,ch)=>{const node=ch[0]||'Другое';
+      padText({title:`${node}: что случилось?`,onOk:d=>vConfirm({kind:'brk',node,desc:d,text:`Поломка (${node}): ${d}`})});}});}
+  else if(k==='insp'){if(needShift())return;$('#dlgVoice').close();inspWalk();}
+  else if(k==='sprav')padText({title:'Что найти в инструкции',onOk:vSprav});
+  else if(k==='shift')vQuickShift();
+  else if(k==='sync'){$('#dlgVoice').close();sync();}});
+
+/* большая цифровая клавиатура */
+let padCfg=null;
+function padOpen(cfg){padCfg=cfg;$('#padTitle').textContent=cfg.title;$('#padVal').textContent=cfg.val==null||cfg.val===''?'':String(cfg.val).replace('.',',');
+  $('#padKeys').hidden=!!cfg.noNum;$('#padVal').hidden=!!cfg.noNum;
+  $('#padChips').innerHTML=(cfg.chips||[]).map(c=>`<button type="button" data-pc="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('');
+  $('#dlgPad').showModal();say(cfg.title);}
+$('#padChips').addEventListener('click',ev=>{const b=ev.target.closest('[data-pc]');if(!b)return;const on=b.getAttribute('aria-pressed')!=='true';
+  if(padCfg.single)$$('#padChips button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed',on);
+  if(padCfg.noNum&&padCfg.single&&on)$('#padOk').click();});
+$('#padKeys').addEventListener('click',ev=>{const b=ev.target.closest('[data-k]');if(!b)return;const k=b.dataset.k,el=$('#padVal');let v=el.textContent;
+  if(k==='del')v=v.slice(0,-1);else if(k==='clr')v='';else if(k===','){if(!v.includes(','))v=(v||'0')+',';}else if(v.length<7)v=(v==='0'?'':v)+k;el.textContent=v;});
+$('#padOk').onclick=()=>{const ch=$$('#padChips [aria-pressed="true"]').map(b=>b.dataset.pc);
+  if(padCfg.noNum){if(padCfg.single&&!ch.length){toast('Выбери вариант');return;}const c=padCfg;$('#dlgPad').close();c.onOk(null,ch);return;}
+  const v=num($('#padVal').textContent,NaN);if(!(v>0)){toast('Введи число');return;}const c=padCfg;$('#dlgPad').close();c.onOk(v,ch);};
+$('#padCancel').onclick=()=>$('#dlgPad').close();
+/* ввод текста голосом или клавиатурой */
+let txtCfg=null;
+function padText(cfg){txtCfg=cfg;$('#txtTitle').textContent=cfg.title;$('#txtIn').value='';$('#dlgTxt').showModal();say(cfg.title);setTimeout(()=>$('#txtIn').focus(),80);}
+$('#txtMic').onclick=async()=>{if(listening){stopListen();return;}$('#txtMic').classList.add('on');
+  try{const s=await listen(p=>{$('#txtIn').value=p;});$('#txtIn').value=s;}catch(e){if(e.code!=='no-speech'&&e.code!=='aborted')toast('Скажи через микрофон на клавиатуре');$('#txtIn').focus();}
+  $('#txtMic').classList.remove('on');};
+$('#txtOk').onclick=()=>{const v=$('#txtIn').value.trim();if(!v){toast('Напиши или скажи текст');return;}const c=txtCfg;$('#dlgTxt').close();c.onOk(v);};
+$('#txtIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#txtOk').click();});
+$('#txtCancel').onclick=()=>$('#dlgTxt').close();
+
+/* осмотр голосом */
+let iw=null;
+function inspWalk(){const sh=curShift();if(!sh){toast('Сначала начни смену');return;}
+  const todo=INSP_ALL.filter(i=>!(sh.insp[i.id]&&sh.insp[i.id].s));iw={list:todo.length?todo:INSP_ALL.slice(),k:0};
+  $('#dlgInsp').showModal();iwShow();}
+function iwShow(){const sh=curShift(),it=iw.list[iw.k];
+  if(!it){const all=INSP_ALL.every(i=>sh.insp[i.id]&&sh.insp[i.id].s),bad=INSP_ALL.filter(i=>sh.insp[i.id]&&sh.insp[i.id].s==='bad');
+    $('#iwGroup').textContent='Осмотр';$('#iwItem').textContent=all?(bad.length?`Готово. Неисправностей: ${bad.length}.`:'Готово. Всё в норме.'):'Пройдены все пункты из списка.';
+    $('#iwBtns').hidden=true;$('#iwEnd').hidden=false;$('#iwSign').hidden=!all||!!sh.inspAt;$('#iwCount').textContent='';
+    say($('#iwItem').textContent+(all&&!sh.inspAt?' Подписать осмотр?':''));return;}
+  $('#iwBtns').hidden=false;$('#iwEnd').hidden=true;$('#iwGroup').textContent=it.g;$('#iwItem').textContent=it.l;
+  $('#iwCount').textContent=`${iw.k+1} из ${iw.list.length}${CRIT.has(it.id)?' · важный пункт':''}`;
+  say(it.l).then(()=>{if(S.ui.speak&&SR&&navigator.onLine&&$('#dlgInsp').open&&iw&&iw.list[iw.k]===it)iwListen(it);});}
+async function iwListen(it){try{$('#iwMic').classList.add('on');const s=ruNorm(await listen());$('#iwMic').classList.remove('on');
+    if(!iw||iw.list[iw.k]!==it)return;
+    if(/неиспр|нет|плохо|теч|сломан|не работ|пробл|замечан/.test(s))iwMark('bad',s);else if(/норм|да|порядок|хорош|в норме|есть|работает|ок/.test(s))iwMark('ok');else if(/пропус|дальше|следующ/.test(s))iwNext();}
+  catch(e){$('#iwMic').classList.remove('on');}}
+function iwMark(v,note){const sh=curShift(),it=iw.list[iw.k];sh.insp[it.id]={s:v,n:v==='bad'?(note||''):''};if(sh.inspAt&&v==='bad'){sh.inspAt='';sh.inspBy='';}save();dirtyShift(sh.id);
+  if(v==='bad'&&CRIT.has(it.id))say('Критическая неисправность. Работа запрещена до устранения. Сообщи механику.');iwNext();}
+function iwNext(){iw.k++;iwShow();}
+$('#iwOk').onclick=()=>{stopListen();iwMark('ok');};$('#iwBad').onclick=()=>{stopListen();iwMark('bad');};$('#iwSkip').onclick=()=>{stopListen();iwNext();};
+$('#iwMic').onclick=()=>{const it=iw&&iw.list[iw.k];if(it)iwListen(it);};
+$('#iwSign').onclick=()=>{const sh=curShift();sh.inspBy=sh.operator||S.operator;sh.inspAt=new Date().toISOString();save();dirtyShift(sh.id);say('Осмотр подписан.');$('#dlgInsp').close();renderActiveTab();};
+$('#iwClose').onclick=()=>{stopListen();try{speechSynthesis.cancel();}catch(e){}$('#dlgInsp').close();renderActiveTab();};
 
 /* ---------- вкладки ---------- */
 function setTab(t){S.tab=t;save();$$('section.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+t));$$('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
